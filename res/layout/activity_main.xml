@@ -8,9 +8,42 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.insta.livraison_app.MainActivity" >
 
-    <TextView
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:orientation="vertical"
+        android:layout_height="fill_parent">
+        
+		 <EditText
+		    android:id="@+id/Login"
+		    android:layout_height="wrap_content"
+		    android:hint="@string/Login"
+		    android:layout_width="fill_parent">
+		</EditText>
+		<EditText
+		    android:id="@+id/Password"
+		    android:layout_height="wrap_content"
+		    android:hint="@string/Password"
+		    android:layout_width="fill_parent"
+		    android:inputType= "textPassword">
+		</EditText>
+		<CheckBox
+		    android:id="@+id/ShowPassWord"
+		    android:layout_height="wrap_content"
+		    android:text="@string/ShowPassWord"
+		    android:layout_width="fill_parent"
+		    android:checked="true">"
+		</CheckBox>
+		
+		<Button
+        android:id="@+id/Envoyer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/hello_world" />
+        android:text="@string/Envoyer"/>
+ 
+    </LinearLayout>
+    <TextView
+        android:id = "@+id/JsonTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
 </RelativeLayout>

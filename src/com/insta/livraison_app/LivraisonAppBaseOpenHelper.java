@@ -37,6 +37,7 @@ public class LivraisonAppBaseOpenHelper extends SQLiteOpenHelper {
 														+ " longitude TEXT NOT NULL,"
 														+ " date TEXT NOT NULL,"
 														+ " client_id INTEGER NOT NULL,"
+														+ " statut INTEGER NOT NULL,"
 														+ " livreur_id INTEGER NOT NULL,"
 														+ " FOREIGN KEY (client_id) REFERENCES  client(id),"
 														+ " FOREIGN KEY (livreur_id) REFERENCES livreur(id));");

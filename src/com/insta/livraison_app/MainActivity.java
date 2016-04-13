@@ -1,17 +1,79 @@
 package com.insta.livraison_app;
 
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.method.PasswordTransformationMethod;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.TextView;
 
+@SuppressLint("SimpleDateFormat")
 public class MainActivity extends Activity {
 
-	private int test;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		findViewById(R.id.Envoyer).setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				try {
+					EditText loginET = (EditText) findViewById(R.id.Login);
+					EditText passwordET = (EditText) findViewById(R.id.Password);
+					if(!loginET.getText().toString().equals("") && !passwordET.getText().toString().equals(""))
+					{
+						String login = loginET.getText().toString();
+						String password1 = ConvertSha1.SHA1("lol");
+						String password = passwordET.getText().toString();
+						Calendar c = Calendar.getInstance();
+						
+						SimpleDateFormat df = new SimpleDateFormat("dd-MM-yy");
+						String date = df.format(c.getTime());
+						
+						String allConcat = login.concat("|".concat(password).concat("|".concat(date)));
+						String result = Base64.encodeToString(allConcat.getBytes(), Base64.DEFAULT);
+						
+						new JsonLoader((TextView) findViewById(R.id.JsonTest)).execute("http://172.16.16.94/livraison-app-webservice/?json=login&token=".concat(result));
+					}else{
+						
+					}
+				} catch (NoSuchAlgorithmException e) {
+					e.printStackTrace();
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				}		
+			}
+			
+		});
+		
+		findViewById(R.id.ShowPassWord).setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				CheckBox cb = (CheckBox) findViewById(R.id.ShowPassWord);
+				EditText passwordET = (EditText) findViewById(R.id.Password);
+				if(cb.isChecked())
+				{
+					passwordET.setTransformationMethod(new PasswordTransformationMethod());
+				}else{
+					passwordET.setTransformationMethod(null);
+				}
+				
+			}
+			
+		});
 	}
 
 	@Override
