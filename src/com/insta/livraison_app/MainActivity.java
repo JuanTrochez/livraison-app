@@ -4,6 +4,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -45,13 +47,20 @@ public class MainActivity extends Activity {
 						String allConcat = login.concat("|".concat(password).concat("|".concat(date)));
 						String result = Base64.encodeToString(allConcat.getBytes(), Base64.DEFAULT);
 						
-						new JsonLoader((TextView) findViewById(R.id.JsonTest)).execute("http://172.16.16.94/livraison-app-webservice/?json=login&token=".concat(result));
+						JsonLoader getJsonConnection = new JsonLoader((TextView) findViewById(R.id.JsonTest), v);
+						getJsonConnection.execute("http://172.16.16.94/livraison-app-webservice/?json=login&token=".concat(result)).get();	
 					}else{
 						
 					}
 				} catch (NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}		
 			}

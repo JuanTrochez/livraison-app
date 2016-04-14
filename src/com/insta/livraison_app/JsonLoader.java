@@ -12,15 +12,24 @@ import java.net.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar.LayoutParams;
+import android.content.Context;
 import android.os.AsyncTask;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 
 	private final WeakReference<TextView> jsonTV;
+	private final WeakReference<View> mainActivity;
 	
-	public JsonLoader(TextView jsonTv){
+	public JsonLoader(TextView jsonTv, View v){
 		this.jsonTV = new WeakReference<TextView>(jsonTv);
+		this.mainActivity = new WeakReference<View>(v);
 	}
 	
 	@Override
@@ -70,18 +79,43 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 		try {
 			JSONObject jsonObject = new JSONObject(json.toString());
 			JSONObject resultats = jsonObject.getJSONObject("infos");
+			Choice choice = null;
 			
-			if(resultats.getString("data").equals("login"))
-			{
-				JSONObject	token = jsonObject.getJSONObject("data");
-				jsonTV.get().append(token.getString("token"));
-			}else{
-				jsonTV.get().append("Rien trouvé morray"); 
-			}	
+			try{
+				choice = Choice.valueOf(resultats.getString("data"));
+			}catch(Exception e){
+			}
+			
+			switch(choice){
+			case login:
+				if(resultats.getString("valide").equals("true"))
+				{
+					//TODO Appeler la nouvelle activité pour la liste des livraisons
+				}else{
+					LayoutInflater layoutInflater = (LayoutInflater)mainActivity.get().getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
+					View popupView = layoutInflater.inflate(R.layout.popup, null); 
+					final PopupWindow popupWindow = new PopupWindow(popupView,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);  
+				    Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
+				    popupWindow.showAtLocation(mainActivity.get(), Gravity.CENTER, 0, mainActivity.get().getHeight());
+				    btnDismiss.setOnClickListener(new Button.OnClickListener(){					    	
+					    @Override
+					    public void onClick(View v) {
+					     // TODO Auto-generated method stub
+					     popupWindow.dismiss();
+					    }});
+				}
+				break;
+			default :
+				
+			}
+				
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
+	private enum Choice{
+		login,livraison;
+	}
 }
