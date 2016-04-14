@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 						String result = Base64.encodeToString(allConcat.getBytes(), Base64.DEFAULT);
 						
 						JsonLoader getJsonConnection = new JsonLoader((TextView) findViewById(R.id.JsonTest), v);
-						getJsonConnection.execute("http://172.16.16.94/livraison-app-webservice/?json=login&token=".concat(result)).get();	
+						getJsonConnection.execute("http://livraison-app.esy.es/?json=login&token=".concat(result)).get();	
 					}else{
 						
 					}
