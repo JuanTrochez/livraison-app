@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.insta.livraison_app.MainActivity"
+    android:background="@android:color/white"
     android:orientation="vertical"
     android:paddingRight="20dp"
     android:paddingLeft="20dp"
@@ -22,8 +23,8 @@
 	   android:id="@+id/Login"
 	   android:hint="@string/Login"
 	   android:focusable="true"
-	   android:textColorHighlight="#00FFFF"
-	   android:textColorHint="#00FFFF"
+	   android:textColorHighlight="@color/darkGrey"
+	   android:textColorHint="@color/darkGrey"
 	   android:layout_below="@+id/imageView"
 	   android:layout_marginTop="10dp"
 	   android:layout_centerVertical="true"
@@ -41,7 +42,8 @@
 	   android:layout_alignParentStart="true"
 	   android:layout_alignRight="@+id/Login"
 	   android:layout_alignEnd="@+id/Login"
-	   android:textColorHint="#00FFFF"
+	   android:textColorHighlight="@color/darkGrey"
+	   android:textColorHint="@color/darkGrey"
 	   android:hint="@string/Password" />
 	<CheckBox
 	   android:id="@+id/ShowPassWord"
@@ -49,7 +51,7 @@
 	   android:layout_below="@+id/Password"
 	   android:layout_alignParentLeft="true"
 	   android:layout_alignParentStart="true"
-		  android:text="@string/ShowPassWord"
+	   android:text="@string/ShowPassWord"
 	   android:layout_width="fill_parent"
 	   android:checked="true">
 	</CheckBox>
@@ -72,6 +74,8 @@
 	   android:layout_alignParentBottom="true"
 	   android:layout_width="fill_parent"
 	   android:layout_height="wrap_content"
+	   android:background="@color/darkGreen"
+	   android:textColor="@color/white"
 	   android:text="@string/Envoyer"/>
    
 <!--     <LinearLayout -->
