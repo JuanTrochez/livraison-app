@@ -8,4 +8,6 @@
 	<string name="Password">Password</string>
 	<string name="Envoyer">Log in</string>
 	<string name="ShowPassWord">Hide password</string>
+	<string name="SaveData">Remember me</string>
+	
 </resources>

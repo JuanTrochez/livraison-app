@@ -65,6 +65,17 @@
 	   android:checked="true">
 	</CheckBox>
    
+	<CheckBox
+	   android:id="@+id/SaveData"
+	   android:layout_height="wrap_content"
+	   android:layout_below="@+id/Password"
+	   android:layout_alignParentLeft="true"
+	   android:layout_alignParentStart="true"
+	   android:text="@string/SaveData"
+	   android:layout_width="fill_parent"
+	   android:checked="true">
+	</CheckBox>
+	
 	<Button
 	   android:id="@+id/Envoyer"
 	   android:layout_centerVertical="true"

@@ -8,24 +8,39 @@ import java.util.concurrent.ExecutionException;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActionBar.LayoutParams;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Base64;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.PopupWindow;
+import android.widget.Toast;
 
 @SuppressLint("SimpleDateFormat")
 public class MainActivity extends Activity {
 
+	private String date = "";
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		Calendar c = Calendar.getInstance();
+		
+		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yy");
+		date = df.format(c.getTime());
+		
 		
 		findViewById(R.id.Envoyer).setOnClickListener(new OnClickListener(){
 
@@ -39,16 +54,12 @@ public class MainActivity extends Activity {
 						String login = loginET.getText().toString();
 						String password1 = ConvertSha1.SHA1("lol");
 						String password = passwordET.getText().toString();
-						Calendar c = Calendar.getInstance();
 						
-						SimpleDateFormat df = new SimpleDateFormat("dd-MM-yy");
-						String date = df.format(c.getTime());
 						
 						String allConcat = login.concat("|".concat(password).concat("|".concat(date)));
 						String result = Base64.encodeToString(allConcat.getBytes(), Base64.DEFAULT);
-						
-						JsonLoader getJsonConnection = new JsonLoader((TextView) findViewById(R.id.JsonTest), v);
-						getJsonConnection.execute("http://livraison-app.esy.es/?json=login&token=".concat(result)).get();	
+						connect(login,password,v,result);
+							
 					}else{
 						
 					}
@@ -62,7 +73,7 @@ public class MainActivity extends Activity {
 				} catch (ExecutionException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-				}		
+				}	
 			}
 			
 		});
@@ -102,5 +113,35 @@ public class MainActivity extends Activity {
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void connect(String login, String password, View v, String result) throws InterruptedException, ExecutionException
+	{
+		JsonLoader getJsonConnection = new JsonLoader(login.concat("|".concat(password)), v, (CheckBox)findViewById(R.id.SaveData));
+		getJsonConnection.execute("http://livraison-app.esy.es/?json=login&token=".concat(result)).get();
+	}
+	
+	public void onResume(){
+		super.onResume();
+	}
+	public void onStart(){
+		super.onStart();
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		String username = prefs.getString("username", "");
+		String password = prefs.getString("password", "");
+		
+		if(!username.equals("") && !password.equals(""))
+		{
+			String allConcat = username.concat("|".concat(password).concat("|".concat(date)));
+			String result = Base64.encodeToString(allConcat.getBytes(), Base64.DEFAULT);
+			try {
+				connect(username,password,findViewById(android.R.id.content),result);
+			}catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+		 }
 	}
 }
