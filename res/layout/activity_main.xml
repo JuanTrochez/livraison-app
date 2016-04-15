@@ -3,29 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.insta.livraison_app.MainActivity"
-    android:orientation="vertical" >
-
-    
-    <TextView android:text="Login" android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:id="@+id/textview"
-      android:textSize="35dp"
-      android:layout_alignParentTop="true"
-      android:textColor="#ff7aff24"
-      android:layout_centerHorizontal="true" />
-    
+    android:orientation="vertical"
+    android:paddingRight="20dp"
+    android:paddingLeft="20dp"
+    android:paddingTop="10dp" >   
     
 	<ImageView
-	   android:layout_width="wrap_content"
-	   android:layout_height="wrap_content"
+	   android:layout_width="100dp"
+	   android:layout_height="100dp"
 	   android:id="@+id/imageView"
 	   android:src="@drawable/sloth2"
-	   android:layout_below="@+id/textview"
-	   android:layout_centerHorizontal="true" />
+	   android:layout_gravity="center" />
 	
 	<EditText
 	   android:layout_width="fill_parent"
@@ -36,13 +25,13 @@
 	   android:textColorHighlight="#00FFFF"
 	   android:textColorHint="#00FFFF"
 	   android:layout_below="@+id/imageView"
-	   android:layout_marginTop="46dp"
+	   android:layout_marginTop="10dp"
 	   android:layout_centerVertical="true"
 	   android:layout_centerHorizontal="true" />
 	   
 	
 	<EditText
-	   android:layout_width="wrap_content"
+	   android:layout_width="fill_parent"
 	   android:layout_height="wrap_content"
 	   android:inputType="textPassword"
 	   android:ems="10"

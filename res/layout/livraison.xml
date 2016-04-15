@@ -5,7 +5,8 @@
     android:orientation="vertical"
     android:paddingRight="20dp"
     android:paddingLeft="20dp"
-    android:paddingTop="10dp" >
+    android:paddingTop="10dp"
+    android:background="@android:color/white" >
     
     <fragment
         android:name="com.insta.livraison_app.LivraisonListFragment" 
