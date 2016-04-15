@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ActionBar.LayoutParams;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -107,9 +108,11 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 						    ed.putString("password", data[1]);
 						    ed.commit();
 						}
+						
 						//TODO Appeler la nouvelle activité pour la liste des livraisons
 						Intent intent = new Intent(mainActivity.get().getContext(), LivraisonActivity.class);
 						mainActivity.get().getContext().startActivity(intent);
+						
 					}else{
 						
 						LayoutInflater layoutInflater = (LayoutInflater) mainActivity.get().getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
@@ -127,7 +130,7 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 					break;
 				case livraison:
 					Toast.makeText(mainActivity.get().getContext(), "Livraisons getted", Toast.LENGTH_LONG).show();
-					LivraisonActivity.jsonReturn();
+//					LivraisonActivity.jsonReturn();
 					break;
 				default :
 				

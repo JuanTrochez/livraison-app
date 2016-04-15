@@ -26,6 +26,7 @@ public class LivraisonActivity extends FragmentActivity {
 		}
 	}
 	
-	public static void jsonReturn() {
+	public void onBackPressed() {
+		moveTaskToBack(true);
 	}
 }
