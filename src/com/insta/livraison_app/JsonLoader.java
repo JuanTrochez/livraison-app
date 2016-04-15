@@ -14,22 +14,29 @@ import org.json.JSONObject;
 
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 
-	private final WeakReference<TextView> jsonTV;
 	private final WeakReference<View> mainActivity;
+	private final WeakReference<CheckBox> cbRememberUser;
+	private final String logAndPass;
 	
-	public JsonLoader(TextView jsonTv, View v){
-		this.jsonTV = new WeakReference<TextView>(jsonTv);
+	public JsonLoader(String jsonTv, View v, CheckBox checkBoxR){
+		this.logAndPass = jsonTv;
 		this.mainActivity = new WeakReference<View>(v);
+		this.cbRememberUser = new WeakReference<CheckBox>(checkBoxR);
 	}
 	
 	@Override
@@ -90,9 +97,19 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 			case login:
 				if(resultats.getString("valide").equals("true"))
 				{
+					if(cbRememberUser.get().isChecked())
+					{
+						String[] data = logAndPass.split("\\|");
+						SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity.get().getContext().getApplicationContext());
+					    Editor ed = prefs.edit();
+					    ed.putString("username", data[0]);
+					    ed.putString("password", data[1]);
+					    ed.commit();
+					}
 					//TODO Appeler la nouvelle activité pour la liste des livraisons
 				}else{
-					LayoutInflater layoutInflater = (LayoutInflater)mainActivity.get().getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
+					
+					LayoutInflater layoutInflater = (LayoutInflater) mainActivity.get().getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
 					View popupView = layoutInflater.inflate(R.layout.popup, null); 
 					final PopupWindow popupWindow = new PopupWindow(popupView,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);  
 				    Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
