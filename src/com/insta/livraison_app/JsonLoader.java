@@ -88,6 +88,7 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 		try {
 			JSONObject jsonObject = new JSONObject(json.toString());
 			JSONObject resultats = jsonObject.getJSONObject("infos");
+			JSONObject datas = jsonObject.getJSONObject("data");
 			Choice choice = null;
 			
 			try{
@@ -130,6 +131,7 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 					break;
 				case livraison:
 					Toast.makeText(mainActivity.get().getContext(), "Livraisons getted", Toast.LENGTH_LONG).show();
+					LivraisonListFragment.updateLivraisonDb(datas, mainActivity.get().getContext());
 //					LivraisonActivity.jsonReturn();
 					break;
 				default :
