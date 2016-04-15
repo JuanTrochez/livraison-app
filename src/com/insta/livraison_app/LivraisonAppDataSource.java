@@ -65,6 +65,14 @@ public class LivraisonAppDataSource {
 		return users;
 	}
 	
+	public int isLivraisonInDb(int id) {
+		String selectQuery = "SELECT * FROM " + LivraisonAppDataSource.LIVRAISON_TABLE_NAME
+				+ " WHERE " + LivraisonAppDataSource.LIVRAISON_COLUMN_ID_WEBSERVICE + " = " + id;
+		Cursor cursor = bdd.rawQuery(selectQuery, null);
+		
+		return cursor.getCount();		
+	}
+	
 	public long insertLivraison(int id_webservice, String adresse, String numero, String postal, 
 			String ville, String latitude, String longitude, String date, String duration, 
 			String distance, int statut, int client_id, int livreur_id) {

@@ -69,47 +69,56 @@ public class LivraisonListFragment extends ListFragment {
 			JSONObject livraison = lastDaysLivraisons.getJSONObject(i);
 			
 			int id = Integer.parseInt(livraison.getString("id"));
-			String adresse = livraison.getString("adresse");
-			String numero = livraison.getString("numero");
-			String postal = livraison.getString("code_postal");
-			String ville = livraison.getString("ville");
-			String latitude = livraison.getString("latitude");
-			String longitude = livraison.getString("longitude");
-			String date = livraison.getString("date");
-			String distance = livraison.getString("distance");
-			String duration = livraison.getString("duration");
-			int statut = Integer.parseInt(livraison.getString("statut"));
-			int client_id = Integer.parseInt(livraison.getString("client_id"));
-			int livreur_id = Integer.parseInt(livraison.getString("livreur_id"));
 
-			Toast.makeText(context.getApplicationContext(), "Livraison id " + id, Toast.LENGTH_LONG).show();			
-			
-			LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
-					longitude, date, duration, distance, statut, client_id, livreur_id);
+			Toast.makeText(context.getApplicationContext(), "Count if exist " + LivraisonDataSource.isLivraisonInDb(id), Toast.LENGTH_LONG).show();
+			//check if livraison in database ou pas !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+			if (LivraisonDataSource.isLivraisonInDb(id) == 0) {
+				String adresse = livraison.getString("adresse");
+				String numero = livraison.getString("numero");
+				String postal = livraison.getString("code_postal");
+				String ville = livraison.getString("ville");
+				String latitude = livraison.getString("latitude");
+				String longitude = livraison.getString("longitude");
+				String date = livraison.getString("date");
+				String distance = livraison.getString("distance");
+				String duration = livraison.getString("duration");
+				int statut = Integer.parseInt(livraison.getString("statut"));
+				int client_id = Integer.parseInt(livraison.getString("client_id"));
+				int livreur_id = Integer.parseInt(livraison.getString("livreur_id"));
+
+				Toast.makeText(context.getApplicationContext(), "Livraison id " + id, Toast.LENGTH_LONG).show();			
+				
+				LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
+						longitude, date, duration, distance, statut, client_id, livreur_id);
+				
+			}			
 		}
 		
 		for (int i = 0; i < dailyLivraisons.length(); i++) {
 
 			JSONObject livraison = dailyLivraisons.getJSONObject(i);
-			
+					
 			int id = Integer.parseInt(livraison.getString("id"));
-			String adresse = livraison.getString("adresse");
-			String numero = livraison.getString("numero");
-			String postal = livraison.getString("code_postal");
-			String ville = livraison.getString("ville");
-			String latitude = livraison.getString("latitude");
-			String longitude = livraison.getString("longitude");
-			String date = livraison.getString("date");
-			String distance = livraison.getString("distance");
-			String duration = livraison.getString("duration");
-			int statut = Integer.parseInt(livraison.getString("statut"));
-			int client_id = Integer.parseInt(livraison.getString("client_id"));
-			int livreur_id = Integer.parseInt(livraison.getString("livreur_id"));
+			if (LivraisonDataSource.isLivraisonInDb(id) == 0) {
+				String adresse = livraison.getString("adresse");
+				String numero = livraison.getString("numero");
+				String postal = livraison.getString("code_postal");
+				String ville = livraison.getString("ville");
+				String latitude = livraison.getString("latitude");
+				String longitude = livraison.getString("longitude");
+				String date = livraison.getString("date");
+				String distance = livraison.getString("distance");
+				String duration = livraison.getString("duration");
+				int statut = Integer.parseInt(livraison.getString("statut"));
+				int client_id = Integer.parseInt(livraison.getString("client_id"));
+				int livreur_id = Integer.parseInt(livraison.getString("livreur_id"));
 
-			Toast.makeText(context.getApplicationContext(), "Livraison id " + id, Toast.LENGTH_LONG).show();			
-			
-			LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
-					longitude, date, duration, distance, statut, client_id, livreur_id);
+				Toast.makeText(context.getApplicationContext(), "Livraison id " + id, Toast.LENGTH_LONG).show();			
+				
+				LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
+						longitude, date, duration, distance, statut, client_id, livreur_id);
+				
+			}
 		}		
 	}
 
