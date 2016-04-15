@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
@@ -107,6 +108,8 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 					    ed.commit();
 					}
 					//TODO Appeler la nouvelle activité pour la liste des livraisons
+					Intent intent = new Intent(mainActivity.get().getContext(), LivraisonActivity.class);
+					mainActivity.get().getContext().startActivity(intent);
 				}else{
 					
 					LayoutInflater layoutInflater = (LayoutInflater) mainActivity.get().getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
