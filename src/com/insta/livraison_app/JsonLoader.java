@@ -95,37 +95,41 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 			}
 			
 			switch(choice){
-			case login:
-				if(resultats.getString("valide").equals("true"))
-				{
-					if(cbRememberUser.get().isChecked())
+				case login:
+					if(resultats.getString("valide").equals("true"))
 					{
-						String[] data = logAndPass.split("\\|");
-						SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity.get().getContext().getApplicationContext());
-					    Editor ed = prefs.edit();
-					    ed.putString("username", data[0]);
-					    ed.putString("password", data[1]);
-					    ed.commit();
+						if(cbRememberUser.get().isChecked())
+						{
+							String[] data = logAndPass.split("\\|");
+							SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity.get().getContext().getApplicationContext());
+						    Editor ed = prefs.edit();
+						    ed.putString("username", data[0]);
+						    ed.putString("password", data[1]);
+						    ed.commit();
+						}
+						//TODO Appeler la nouvelle activité pour la liste des livraisons
+						Intent intent = new Intent(mainActivity.get().getContext(), LivraisonActivity.class);
+						mainActivity.get().getContext().startActivity(intent);
+					}else{
+						
+						LayoutInflater layoutInflater = (LayoutInflater) mainActivity.get().getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
+						View popupView = layoutInflater.inflate(R.layout.popup, null); 
+						final PopupWindow popupWindow = new PopupWindow(popupView,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);  
+					    Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
+					    popupWindow.showAtLocation(mainActivity.get(), Gravity.CENTER, 0, mainActivity.get().getHeight());
+					    btnDismiss.setOnClickListener(new Button.OnClickListener(){					    	
+						    @Override
+						    public void onClick(View v) {
+						     // TODO Auto-generated method stub
+						     popupWindow.dismiss();
+						    }});
 					}
-					//TODO Appeler la nouvelle activité pour la liste des livraisons
-					Intent intent = new Intent(mainActivity.get().getContext(), LivraisonActivity.class);
-					mainActivity.get().getContext().startActivity(intent);
-				}else{
-					
-					LayoutInflater layoutInflater = (LayoutInflater) mainActivity.get().getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE); 
-					View popupView = layoutInflater.inflate(R.layout.popup, null); 
-					final PopupWindow popupWindow = new PopupWindow(popupView,LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);  
-				    Button btnDismiss = (Button)popupView.findViewById(R.id.dismiss);
-				    popupWindow.showAtLocation(mainActivity.get(), Gravity.CENTER, 0, mainActivity.get().getHeight());
-				    btnDismiss.setOnClickListener(new Button.OnClickListener(){					    	
-					    @Override
-					    public void onClick(View v) {
-					     // TODO Auto-generated method stub
-					     popupWindow.dismiss();
-					    }});
-				}
-				break;
-			default :
+					break;
+				case livraison:
+					Toast.makeText(mainActivity.get().getContext(), "Livraisons getted", Toast.LENGTH_LONG).show();
+					LivraisonActivity.jsonReturn();
+					break;
+				default :
 				
 			}
 				
