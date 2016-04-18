@@ -6,27 +6,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.insta.livraison_app_Service.DetectConnection;
-
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
 public class LivraisonActivity extends FragmentActivity {
+	
+	private connexionOpen connexionNotif;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.livraison);
 		
-		Intent intent = new Intent(LivraisonActivity.this,DetectConnection.class);
-		if(!isMyServiceRunning(DetectConnection.class))
+		if(connexionNotif == null)
 		{
-			startService(intent);
+			connexionNotif = new connexionOpen();
+			IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+	        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+	        this.registerReceiver(connexionNotif, filter);
 		}
 		
 		JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
@@ -58,10 +63,12 @@ public class LivraisonActivity extends FragmentActivity {
 	public void onResume(){
 		super.onResume();
 
-		if(!isMyServiceRunning(DetectConnection.class))
+		if(connexionNotif == null)
 		{
-			Intent intent = new Intent(LivraisonActivity.this,DetectConnection.class);
-			startService(intent);
+			connexionNotif = new connexionOpen();
+			IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+	        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+	        this.registerReceiver(connexionNotif, filter);
 		}		
 	}
 	
@@ -159,6 +166,21 @@ public class LivraisonActivity extends FragmentActivity {
 		ClientDataSource.close();
 		LivraisonDataSource.close();
 		
+	}
+	
+	public class connexionOpen extends BroadcastReceiver {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+	    	JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
+	    	try {
+				getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}		
+		}		
 	}
 	
 	

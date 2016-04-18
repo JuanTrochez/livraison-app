@@ -33,7 +33,7 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 
 	private final WeakReference<View> mainActivity;
 	private final WeakReference<CheckBox> cbRememberUser;
-	
+
 	public JsonLoader(String jsonTv, View v, CheckBox checkBoxR){
 		this.mainActivity = new WeakReference<View>(v);
 		this.cbRememberUser = new WeakReference<CheckBox>(checkBoxR);
