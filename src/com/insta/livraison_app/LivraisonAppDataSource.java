@@ -58,7 +58,7 @@ public class LivraisonAppDataSource {
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) { 
-			users.add(cursor.getString(1)); 
+			users.add(cursor.getString(0)); 
 			cursor.moveToNext();
 		}
 		cursor.close();
@@ -93,6 +93,10 @@ public class LivraisonAppDataSource {
 		values.put(LivraisonAppDataSource.LIVRAISON_COLUMN_LIVREUR_ID, livreur_id);
 		
 		return bdd.insert(LivraisonAppDataSource.LIVRAISON_TABLE_NAME, null, values);
+	}
+	
+	public void deleteAll() {
+		bdd.delete(LivraisonAppDataSource.LIVRAISON_TABLE_NAME, "1=1", null);
 	}
 	
 	public void open () throws SQLException
