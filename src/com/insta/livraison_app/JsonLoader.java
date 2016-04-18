@@ -131,8 +131,7 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 					break;
 				case livraison:
 					Toast.makeText(mainActivity.get().getContext(), "Livraisons getted", Toast.LENGTH_LONG).show();
-					LivraisonListFragment.updateLivraisonDb(datas, mainActivity.get().getContext());
-//					LivraisonActivity.jsonReturn();
+					LivraisonActivity.updateLivraisonDb(datas, mainActivity.get().getContext());
 					break;
 				default :
 				
