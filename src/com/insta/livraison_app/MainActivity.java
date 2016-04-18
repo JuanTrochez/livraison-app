@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -133,15 +134,17 @@ public class MainActivity extends Activity {
 		
 		if(!username.equals("") && !password.equals(""))
 		{
-			String allConcat = username.concat("|".concat(password).concat("|".concat(date)));
-			String result = Base64.encodeToString(allConcat.getBytes(), Base64.DEFAULT);
-			try {
-				connect(username,password,findViewById(android.R.id.content),result);
-			}catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
+//			String allConcat = username.concat("|".concat(password).concat("|".concat(date)));
+//			String result = Base64.encodeToString(allConcat.getBytes(), Base64.DEFAULT);
+//			try {
+				Intent intent = new Intent(this, LivraisonActivity.class);
+				startActivity(intent);
+//				connect(username,password,findViewById(android.R.id.content),result);
+//			}catch (InterruptedException e) {
+//				e.printStackTrace();
+//			} catch (ExecutionException e) {
+//				e.printStackTrace();
+//			}
 		 }
 	}
 }

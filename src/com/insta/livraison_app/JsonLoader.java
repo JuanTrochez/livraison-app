@@ -33,10 +33,8 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 
 	private final WeakReference<View> mainActivity;
 	private final WeakReference<CheckBox> cbRememberUser;
-	private final String logAndPass;
 	
 	public JsonLoader(String jsonTv, View v, CheckBox checkBoxR){
-		this.logAndPass = jsonTv;
 		this.mainActivity = new WeakReference<View>(v);
 		this.cbRememberUser = new WeakReference<CheckBox>(checkBoxR);
 	}
@@ -100,16 +98,16 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 				case login:
 					if(resultats.getString("valide").equals("true"))
 					{
+						SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity.get().getContext().getApplicationContext());
+						Editor ed = prefs.edit();
 						if(cbRememberUser.get().isChecked())
 						{
-							String[] data = logAndPass.split("\\|");
-							SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity.get().getContext().getApplicationContext());
-						    Editor ed = prefs.edit();
-						    ed.putString("username", data[0]);
-						    ed.putString("password", data[1]);
+						    ed.putString("username", datas.getString("login"));
+						    ed.putString("password", datas.getString("password"));
 						    ed.commit();
 						}
-						
+						ed.putString("token", datas.getString("token"));
+						ed.putString("id", datas.getString("id"));
 						//TODO Appeler la nouvelle activité pour la liste des livraisons
 						Intent intent = new Intent(mainActivity.get().getContext(), LivraisonActivity.class);
 						mainActivity.get().getContext().startActivity(intent);

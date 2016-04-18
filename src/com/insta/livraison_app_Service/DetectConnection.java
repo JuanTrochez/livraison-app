@@ -1,5 +1,11 @@
 package com.insta.livraison_app_Service;
 
+import java.util.concurrent.ExecutionException;
+
+import com.insta.livraison_app.JsonLoader;
+import com.insta.livraison_app.R;
+
+import android.app.Activity;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -9,6 +15,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.IBinder;
+import android.widget.CheckBox;
 import android.widget.Toast;
 
 public class DetectConnection extends Service {
@@ -19,7 +26,6 @@ public class DetectConnection extends Service {
 	public void onCreate()
 	{
 		super.onCreate();
-		Toast.makeText(this,"onCreateService ", Toast.LENGTH_LONG).show();
 		myReceiver = new ReceiverConnection();
 		IntentFilter filter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
@@ -65,6 +71,15 @@ public class DetectConnection extends Service {
 		    {
 		    	//TODO appeler la méthode pour mettre la bdd à jours
 		    	Toast.makeText(context,"izi money, izi life AVANT ", Toast.LENGTH_LONG).show();
+		    	Activity activity = (Activity) context;
+		    	JsonLoader getJsonConnection = new JsonLoader("livraison", activity.findViewById(android.R.id.content), (CheckBox)activity.findViewById(R.id.SaveData));
+		    	try {
+					getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				}
 		    }
 		}
 		
