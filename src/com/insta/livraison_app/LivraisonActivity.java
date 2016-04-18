@@ -138,9 +138,10 @@ public class LivraisonActivity extends FragmentActivity {
 				int statut = Integer.parseInt(livraison.getString("statut"));
 				int client_id = Integer.parseInt(livraison.getString("client_id"));
 				int livreur_id = Integer.parseInt(livraison.getString("livreur_id"));
-				
+
 				//insertion du client
-				JSONObject client = livraison.getJSONObject("client");
+				JSONObject detail = livraison.getJSONObject("detail");
+				JSONObject client = detail.getJSONObject("client");
 				String client_nom = client.getString("nom");
 				String client_prenom = client.getString("prenom");
 				String client_telephone= client.getString("telephone");
@@ -159,5 +160,6 @@ public class LivraisonActivity extends FragmentActivity {
 		LivraisonDataSource.close();
 		
 	}
+	
 	
 }
