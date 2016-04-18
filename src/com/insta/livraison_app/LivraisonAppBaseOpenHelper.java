@@ -7,7 +7,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class LivraisonAppBaseOpenHelper extends SQLiteOpenHelper {
 
 	private static final String DATABSE_NAME = "livraison_app.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 1;	
+	
 	
 	public LivraisonAppBaseOpenHelper(Context context) {
 		super(context, DATABSE_NAME, null, DATABASE_VERSION);
@@ -29,6 +30,7 @@ public class LivraisonAppBaseOpenHelper extends SQLiteOpenHelper {
 														+ " password TEXT NOT NULL);");
 		
 		db.execSQL("CREATE TABLE IF NOT EXISTS livraison ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
+														+ " id_webservice integer NOT NULL,"
 														+ " adresse TEXT NOT NULL,"
 														+ " numero TEXT NOT NULL,"
 														+ " code_postal TEXT NOT NULL,"
@@ -38,6 +40,8 @@ public class LivraisonAppBaseOpenHelper extends SQLiteOpenHelper {
 														+ " date TEXT NOT NULL,"
 														+ " client_id INTEGER NOT NULL,"
 														+ " statut INTEGER NOT NULL,"
+														+ " duration TEXT NOT NULL,"
+														+ " distance TEXT NOT NULL,"
 														+ " livreur_id INTEGER NOT NULL,"
 														+ " FOREIGN KEY (client_id) REFERENCES  client(id),"
 														+ " FOREIGN KEY (livreur_id) REFERENCES livreur(id));");
