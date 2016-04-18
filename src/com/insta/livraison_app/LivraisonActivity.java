@@ -10,18 +10,26 @@ import com.insta.livraison_app_Service.DetectConnection;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
 public class LivraisonActivity extends FragmentActivity {
+	public static String dbUpdated = "dbUpdated";
+	public static JSONObject livraionDatas;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.livraison);
+		
+		ReceiveDBUpdate broadcastDb = new ReceiveDBUpdate();
+		IntentFilter broadcast = new IntentFilter(dbUpdated);
+		this.registerReceiver(broadcastDb, broadcast);
 		
 		Intent intent = new Intent(LivraisonActivity.this,DetectConnection.class);
 		if(!isMyServiceRunning(DetectConnection.class))
@@ -66,7 +74,6 @@ public class LivraisonActivity extends FragmentActivity {
 	}
 	
 	public static void updateLivraisonDb(JSONObject datas, Context context) throws JSONException {
-		Toast.makeText(context.getApplicationContext(), "inserting in db", Toast.LENGTH_LONG).show();
 		
 		JSONObject livraisons = datas.getJSONObject("livraisons");
 		JSONArray lastDaysLivraisons = livraisons.getJSONArray("priority");
@@ -85,9 +92,7 @@ public class LivraisonActivity extends FragmentActivity {
 			JSONObject livraison = lastDaysLivraisons.getJSONObject(i);
 			
 			int id = Integer.parseInt(livraison.getString("id"));
-
-			Toast.makeText(context.getApplicationContext(), "Count if exist " + LivraisonDataSource.isLivraisonInDb(id), Toast.LENGTH_LONG).show();
-			
+	
 			if (LivraisonDataSource.isLivraisonInDb(id) == 0) {
 				String adresse = livraison.getString("adresse");
 				String numero = livraison.getString("numero");
@@ -110,9 +115,7 @@ public class LivraisonActivity extends FragmentActivity {
 				String client_telephone= client.getString("telephone");
 				String client_email= client.getString("email");
 				
-				ClientDataSource.insertClient(client_id, client_nom, client_prenom, client_email, client_telephone);
-
-				Toast.makeText(context.getApplicationContext(), "Livraison id " + id, Toast.LENGTH_LONG).show();			
+				ClientDataSource.insertClient(client_id, client_nom, client_prenom, client_email, client_telephone);		
 				
 				LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
 						longitude, date, duration, distance, statut, client_id, livreur_id);
@@ -158,6 +161,23 @@ public class LivraisonActivity extends FragmentActivity {
 		}		
 		ClientDataSource.close();
 		LivraisonDataSource.close();
+
+		Toast.makeText(context.getApplicationContext(), "inserting in db", Toast.LENGTH_LONG).show();
+		
+	}
+	
+	public class ReceiveDBUpdate extends BroadcastReceiver{
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			try {
+				LivraisonActivity.updateLivraisonDb(livraionDatas, context);
+				setContentView(R.layout.livraison);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 		
 	}
 	

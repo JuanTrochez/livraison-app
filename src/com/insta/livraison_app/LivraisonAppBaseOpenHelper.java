@@ -18,6 +18,7 @@ public class LivraisonAppBaseOpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		
 		db.execSQL("CREATE TABLE IF NOT EXISTS client ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
+														+ " id_webservice INTEGER NOT NULL,"
 														+ " nom TEXT NOT NULL,"
 														+ " prenom TEXT NOT NULL,"
 														+ " telephone TEXT NOT NULL,"

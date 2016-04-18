@@ -15,6 +15,7 @@ public class ClientAppDataSource {
 	private LivraisonAppBaseOpenHelper baseSQLite;
 
 	private static final String CLIENT_TABLE_NAME = "client";
+	private static final String CLIENT_COLUMN_ID_WEBSERVICE = "id_webservice";
 	private static final String CLIENT_COLUMN_ID = "id";
 	private static final String CLIENT_COLUMN_NOM = "nom";
 	private static final String CLIENT_COLUMN_PRENOM = "prenom";
@@ -41,10 +42,10 @@ public class ClientAppDataSource {
 		return livraisons;
 	}
 	
-	public long insertClient(int id, String nom, String prenom, String email, String telephone) {
+	public long insertClient(int id_webservice, String nom, String prenom, String email, String telephone) {
 		
 		ContentValues values = new ContentValues(); 
-		values.put(ClientAppDataSource.CLIENT_COLUMN_ID, id);
+		values.put(ClientAppDataSource.CLIENT_COLUMN_ID_WEBSERVICE, id_webservice);
 		values.put(ClientAppDataSource.CLIENT_COLUMN_NOM, nom);
 		values.put(ClientAppDataSource.CLIENT_COLUMN_PRENOM, prenom);
 		values.put(ClientAppDataSource.CLIENT_COLUMN_EMAIL, email);
