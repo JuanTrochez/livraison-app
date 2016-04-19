@@ -9,14 +9,14 @@
     android:paddingTop="10dp" >
     
     <fragment
-        android:name="com.insta.livraison_app.LivraisonListFragment" 
+        class="com.insta.livraison_app.LivraisonListFragment" 
         android:id="@+id/list_fragment" 
         android:layout_width="0dp" 
         android:layout_weight="2" 
         android:layout_height="match_parent" />
     
     <fragment 
-        class="com.insta.livraison_app.LivraisonDetailFragment" 
+        android:name="com.insta.livraison_app.LivraisonDetailFragment" 
         android:id="@+id/detail_fragment" 
         android:layout_width="0dp" 
         android:layout_weight="2" 

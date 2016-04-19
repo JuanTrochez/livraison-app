@@ -129,9 +129,10 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 						    }});
 					}
 					break;
-				case livraison:					
-					Intent intentMessage = new Intent(LivraisonActivity.dbUpdated);
-					LivraisonActivity.livraionDatas = datas;
+				case livraison:
+					Toast.makeText(mainActivity.get().getContext(), "livraison getted", Toast.LENGTH_LONG).show();
+					LivraisonActivity.livraisonDatas = datas;
+					Intent intentMessage = new Intent(LivraisonListFragment.dbUpdated);
 					mainActivity.get().getContext().sendBroadcast(intentMessage);
 					break;
 				default :
