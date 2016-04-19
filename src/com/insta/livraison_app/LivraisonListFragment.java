@@ -1,5 +1,6 @@
 package com.insta.livraison_app;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -24,10 +25,9 @@ import android.widget.Toast;
 public class LivraisonListFragment extends ListFragment {
 	
 	LivraisonDetailFragment detailView;
-	private ArrayAdapter<String> adapter;
+	private LivraisonAdapter adapter;
 	public static String dbUpdated = "dbUpdated";
 	private broadcastDbUpdate broadcastDbUpdate;
-	private List<String> dailyLivraisons;
 	
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -38,13 +38,23 @@ public class LivraisonListFragment extends ListFragment {
 		filter.addAction(LivraisonListFragment.dbUpdated);
         getActivity().registerReceiver(broadcastDbUpdate, filter);
 		
+        ClientAppDataSource clientDataSource = new ClientAppDataSource(this.getContext());
 		LivraisonAppDataSource LivraisonDataSource = new LivraisonAppDataSource(this.getContext());
-		LivraisonDataSource.open();		
-		dailyLivraisons = LivraisonDataSource.getAll();
+		LivraisonDataSource.open();	
+		clientDataSource.open();	
+		Livraison.dailyLivraisons = LivraisonDataSource.getDailyLivraisons();
 		
-		String[] values = new String[]{"Android","iPhone","WindowsMobile","Blackberry","WebOs","Ubuntu","Windows7","Mac OS X","Linux","OS/2"};
+		for (int i = 0; i < Livraison.dailyLivraisons.size(); i++) {
+			Toast.makeText(this.getContext(), "client : " + Livraison.dailyLivraisons.get(i).getClient_id(), Toast.LENGTH_SHORT).show();
+//			Client client = Livraison.dailyLivraisons.get(i).
+			Livraison.dailyLivraisons.get(i).setClient(clientDataSource.getClientById(Livraison.dailyLivraisons.get(i).getClient_id()));
+		}
+
+		clientDataSource.close();	
 		
-		adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, dailyLivraisons);
+		String[] values = new String[]{"republique","voltaire","WindowsMobile","Blackberry","WebOs","Ubuntu","Windows7","Mac OS X","Linux","OS/2"};
+		
+		adapter = new LivraisonAdapter(this.getContext(), Livraison.dailyLivraisons);
 		setListAdapter(adapter);
 
 		detailView = (LivraisonDetailFragment) getFragmentManager().findFragmentById(R.id.detail_fragment);
@@ -66,18 +76,6 @@ public class LivraisonListFragment extends ListFragment {
 		}		
 	}
 	
-	public void update(Context context) {
-		LivraisonAppDataSource LivraisonDataSource = new LivraisonAppDataSource(context);
-		LivraisonDataSource.open();		
-		List<String> dailyLivraisons = LivraisonDataSource.getAll();
-		
-		String[] values = new String[]{"Android","iPhone","WindowsMobile","Blackberry","WebOs","Ubuntu","Windows7","Mac OS X","Linux","OS/2"};
-		
-		adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, dailyLivraisons);
-		setListAdapter(adapter);
-		detailView = (LivraisonDetailFragment) getFragmentManager().findFragmentById(R.id.detail_fragment);
-	};
-	
 	public class broadcastDbUpdate extends BroadcastReceiver {
 
 		@Override
@@ -88,10 +86,23 @@ public class LivraisonListFragment extends ListFragment {
 				try {
 					LivraisonActivity.updateLivraisonDb(LivraisonActivity.livraisonDatas, context);
 					
-					LivraisonAppDataSource LivraisonDataSource = new LivraisonAppDataSource(getContext());
-					LivraisonDataSource.open();		
-					dailyLivraisons = LivraisonDataSource.getAll();
-					adapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, dailyLivraisons);
+					ClientAppDataSource clientDataSource = new ClientAppDataSource(getActivity().getApplicationContext());
+					LivraisonAppDataSource LivraisonDataSource = new LivraisonAppDataSource(getActivity().getApplicationContext());
+					LivraisonDataSource.open();	
+					clientDataSource.open();	
+					Livraison.dailyLivraisons = LivraisonDataSource.getDailyLivraisons();
+					
+					for (int i = 0; i < Livraison.dailyLivraisons.size(); i++) {
+						Toast.makeText(getActivity().getApplicationContext(), "client : " + Livraison.dailyLivraisons.get(i).getClient_id(), Toast.LENGTH_SHORT).show();
+//						Client client = Livraison.dailyLivraisons.get(i).
+						Livraison.dailyLivraisons.get(i).setClient(clientDataSource.getClientById(Livraison.dailyLivraisons.get(i).getClient_id()));
+					}
+
+					clientDataSource.close();	
+					
+					String[] values = new String[]{"republique","voltaire","WindowsMobile","Blackberry","WebOs","Ubuntu","Windows7","Mac OS X","Linux","OS/2"};
+					
+					adapter = new LivraisonAdapter(getActivity().getApplicationContext(), Livraison.dailyLivraisons);
 					setListAdapter(adapter);
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block

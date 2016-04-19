@@ -42,10 +42,12 @@ public final class R {
         public static final int Password=0x7f090002;
         public static final int SaveData=0x7f090004;
         public static final int ShowPassWord=0x7f090003;
-        public static final int action_settings=0x7f09000b;
+        public static final int action_settings=0x7f09000d;
+        public static final int adresse_list=0x7f09000b;
+        public static final int client_list=0x7f09000a;
         public static final int detailTextView=0x7f090009;
         public static final int detail_fragment=0x7f090008;
-        public static final int dismiss=0x7f09000a;
+        public static final int dismiss=0x7f09000c;
         public static final int imageView=0x7f090000;
         public static final int list_fragment=0x7f090007;
     }
@@ -53,7 +55,8 @@ public final class R {
         public static final int activity_main=0x7f030000;
         public static final int livraison=0x7f030001;
         public static final int livraison_detail=0x7f030002;
-        public static final int popup=0x7f030003;
+        public static final int livraison_list=0x7f030003;
+        public static final int popup=0x7f030004;
     }
     public static final class menu {
         public static final int main=0x7f080000;

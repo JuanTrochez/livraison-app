@@ -42,6 +42,28 @@ public class ClientAppDataSource {
 		return livraisons;
 	}
 	
+	public Client getClientById(int id) {
+		Client client = new Client();
+		
+		String selectQuery = "SELECT * FROM " + ClientAppDataSource.CLIENT_TABLE_NAME
+							+ " WHERE id = " + id;
+		Cursor cursor = bdd.rawQuery(selectQuery, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) {
+			client.setId_webService(Integer.parseInt(cursor.getString(1)));
+			client.setNom(cursor.getString(2));
+			client.setPrenom(cursor.getString(3));
+			client.setTelephone(cursor.getString(4));
+			client.setEmail(cursor.getString(5));
+			cursor.moveToNext();
+		}
+		cursor.close();
+		
+		return client;
+		
+	}
+	
 	public long insertClient(int id_webservice, String nom, String prenom, String email, String telephone) {
 		
 		ContentValues values = new ContentValues(); 

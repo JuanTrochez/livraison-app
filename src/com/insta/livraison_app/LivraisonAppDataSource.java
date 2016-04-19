@@ -34,16 +34,30 @@ public class LivraisonAppDataSource {
 		baseSQLite = new LivraisonAppBaseOpenHelper(context);
 	}
 	
-	public ArrayList<Object> getDailyLivraisons() {
-		ArrayList<Object> livraisons = new ArrayList<Object>();
+	public ArrayList<Livraison> getDailyLivraisons() {
+		ArrayList<Livraison> livraisons = new ArrayList<Livraison>();
 		String selectQuery = "SELECT * FROM " + LivraisonAppDataSource.LIVRAISON_TABLE_NAME 
-				+ " WHERE  satut = 0"
+				+ " WHERE  statut = 0"
 				+ " ORDER BY date ASC, distance ASC";
 		Cursor cursor = bdd.rawQuery(selectQuery, null);
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			livraisons.add(cursor); 
+			Livraison livraison = new Livraison();
+			livraison.setId_webService(Integer.parseInt(cursor.getString(1)));
+			livraison.setAdresse(cursor.getString(2));
+			livraison.setNumero(cursor.getString(3));
+			livraison.setCodePostal(cursor.getString(4));
+			livraison.setVille(cursor.getString(5));
+			livraison.setLatitude(cursor.getString(6));
+			livraison.setLongitude(cursor.getString(7));
+			livraison.setDate(cursor.getString(8));			
+			livraison.setClient_id(Integer.parseInt(cursor.getString(9)));
+			livraison.setStatut(Integer.parseInt(cursor.getString(10)));
+			livraison.setDuration(cursor.getString(11));
+			livraison.setDistance(cursor.getString(12));
+			livraison.setLivreur_id(Integer.parseInt(cursor.getString(13)));
+			livraisons.add(livraison); 
 			cursor.moveToNext();
 		}
 		cursor.close();

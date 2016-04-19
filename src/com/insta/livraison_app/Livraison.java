@@ -1,5 +1,7 @@
 package com.insta.livraison_app;
 
+import java.util.ArrayList;
+
 public class Livraison {
 
 	private int id_webService;
@@ -15,7 +17,15 @@ public class Livraison {
 	private String duration;
 	private String distance;
 	private int livreur_id;
+	private int client_id;	
+	public static ArrayList<Livraison> dailyLivraisons;
 	
+	public int getClient_id() {
+		return client_id;
+	}
+	public void setClient_id(int client_id) {
+		this.client_id = client_id;
+	}
 	public int getId_webService() {
 		return id_webService;
 	}
