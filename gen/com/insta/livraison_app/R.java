@@ -42,14 +42,19 @@ public final class R {
         public static final int Password=0x7f090002;
         public static final int SaveData=0x7f090004;
         public static final int ShowPassWord=0x7f090003;
-        public static final int action_settings=0x7f09000d;
-        public static final int adresse_list=0x7f09000b;
-        public static final int client_list=0x7f09000a;
-        public static final int detailTextView=0x7f090009;
+        public static final int action_settings=0x7f090012;
+        public static final int adresse_Client=0x7f09000c;
+        public static final int adresse_list=0x7f090010;
+        public static final int buttonCall=0x7f09000e;
+        public static final int client_list=0x7f09000f;
         public static final int detail_fragment=0x7f090008;
-        public static final int dismiss=0x7f09000c;
+        public static final int dismiss=0x7f090011;
+        public static final int email_Client=0x7f09000b;
         public static final int imageView=0x7f090000;
         public static final int list_fragment=0x7f090007;
+        public static final int nom_Client=0x7f090009;
+        public static final int prenom_Client=0x7f09000a;
+        public static final int telephone_Client=0x7f09000d;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -62,10 +67,11 @@ public final class R {
         public static final int main=0x7f080000;
     }
     public static final class string {
+        public static final int Appeler=0x7f060008;
         public static final int Envoyer=0x7f060006;
         public static final int Login=0x7f060004;
         public static final int Password=0x7f060005;
-        public static final int SaveData=0x7f060008;
+        public static final int SaveData=0x7f060009;
         public static final int ShowPassWord=0x7f060007;
         public static final int action_settings=0x7f060003;
         public static final int app_name=0x7f060000;
