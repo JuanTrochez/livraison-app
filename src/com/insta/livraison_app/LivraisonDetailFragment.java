@@ -26,11 +26,6 @@ public class LivraisonDetailFragment extends Fragment {
 	
 	public void update(int indice){
 		
-//		String[] values = new String[] { "Detail Android","Detail iPhone",
-//				"Detail WindowsMobile","Detail Windows7", "Detail Max OS X",
-//				"Detail Blackberry", "WebOS", "Detail Ubuntu",
-//				"Detail Linux", "Detail OS/2" };
-		
 		ClientAppDataSource clientDataSource = new ClientAppDataSource(this.getContext());
 		clientDataSource.open();
 		
@@ -82,9 +77,9 @@ public class LivraisonDetailFragment extends Fragment {
 
 			@Override
 			public void onClick(View arg0) {
-				Intent callIntent = new Intent(Intent.ACTION_CALL);
-				callIntent.setData(Uri.parse("tel:".concat(client.getTelephone())));
-				startActivity(callIntent);
+				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + client.getTelephone()));     
+				intent.putExtra("sms_body", "HotShot Sms GG"); 
+				startActivity(intent);
 			}
 		});
 		
