@@ -1,7 +1,10 @@
 package com.insta.livraison_app;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -19,6 +22,7 @@ public class LivraisonDetailFragment extends Fragment {
 	
 	private ImageView callImage;
 	private ImageView smsImage;
+	private ImageView gpsImage;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.livraison_detail, container, false);
@@ -30,7 +34,7 @@ public class LivraisonDetailFragment extends Fragment {
 		clientDataSource.open();
 		
 		final Client client = clientDataSource.getClientById(Livraison.dailyLivraisons.get(indice).getClient_id());
-		Livraison livraison = Livraison.dailyLivraisons.get(indice);
+		final Livraison livraison = Livraison.dailyLivraisons.get(indice);
 		
 		clientDataSource.close();
 		
@@ -77,8 +81,26 @@ public class LivraisonDetailFragment extends Fragment {
 
 			@Override
 			public void onClick(View arg0) {
-				Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + client.getTelephone()));     
-				intent.putExtra("sms_body", "HotShot Sms GG"); 
+				buildAlertMessageSms(client);
+				
+			}
+		});
+		
+		gpsImage= (ImageView) getView().findViewById(R.id.imageGPS);
+		
+		gpsImage.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
+				
+				if(manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
+				{
+					buildAlertMessageNoGps();
+				}
+				
+				Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+						Uri.parse("http://maps.google.com/maps?saddr="+ LivraisonActivity.location.getLatitude()+","+ LivraisonActivity.location.getLongitude()+"&daddr="+livraison.getLatitude()+","+livraison.getLongitude()));
 				startActivity(intent);
 			}
 		});
@@ -88,5 +110,68 @@ public class LivraisonDetailFragment extends Fragment {
 	{
 		super.onResume();
 		this.update(index);
+	}
+	
+	private void buildAlertMessageSms(final Client client){
+		AlertDialog.Builder builderSingle = new AlertDialog.Builder(this.getContext());
+		
+		final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this.getContext(),android.R.layout.select_dialog_singlechoice);
+		arrayAdapter.add("Hello");
+		arrayAdapter.add("My");
+		arrayAdapter.add("Friend");
+		arrayAdapter.add("92i");
+		arrayAdapter.add("IZI GANG IZI GANG");
+
+		builderSingle.setNegativeButton(
+		        "cancel",
+		        new DialogInterface.OnClickListener() {
+		            @Override
+		            public void onClick(DialogInterface dialog, int which) {
+		                dialog.dismiss();
+		            }
+		        });
+
+		builderSingle.setAdapter(
+		        arrayAdapter,
+		        new DialogInterface.OnClickListener() {
+		            @Override
+		            public void onClick(DialogInterface dialog, int which) {
+		                final String strName = arrayAdapter.getItem(which);
+		                AlertDialog.Builder builderInner = new AlertDialog.Builder(LivraisonDetailFragment.this.getContext());
+		                builderInner.setMessage(strName);
+		                builderInner.setTitle("Votre message est le suivant : ");
+		                builderInner.setPositiveButton(
+		                        "Envoyer",
+		                        new DialogInterface.OnClickListener() {
+		                            @Override
+		                            public void onClick( DialogInterface dialog,int which) {
+		                            	Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("sms:" + client.getTelephone()));     
+		                				intent.putExtra("sms_body", strName); 
+		                				startActivity(intent);
+		                                dialog.dismiss();
+		                            }
+		                        });
+		                builderInner.show();
+		            }
+		        });
+		builderSingle.show();
+	}
+	
+	private void buildAlertMessageNoGps() {
+	    final AlertDialog.Builder builder = new AlertDialog.Builder(this.getContext());
+	    builder.setMessage("Votre GPS semble être désactivé, voulez vous le réactiver ?")
+	           .setCancelable(false)
+	           .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+	               public void onClick(final DialogInterface dialog, final int id) {
+	                   startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+	               }
+	           })
+	           .setNegativeButton("No", new DialogInterface.OnClickListener() {
+	               public void onClick(final DialogInterface dialog, final int id) {
+	                    dialog.cancel();
+	               }
+	           });
+	    final AlertDialog alert = builder.create();
+	    alert.show();
 	}
 }

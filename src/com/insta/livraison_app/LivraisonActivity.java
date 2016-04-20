@@ -11,6 +11,8 @@ import android.content.Context;
 import android.content.Intent;
 
 import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationListener;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -18,11 +20,12 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
-public class LivraisonActivity extends FragmentActivity {
+public class LivraisonActivity extends FragmentActivity implements LocationListener {
 	
 	public static JSONObject livraisonDatas;	
 	private connexionOpen connexionNotif;
 	private boolean flagConnectivity;
+	public static Location location;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +181,30 @@ public class LivraisonActivity extends FragmentActivity {
 			
 					
 		}		
+	}
+
+	@Override
+	public void onLocationChanged(Location location) {
+		LivraisonActivity.location = location;
+		
+	}
+
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
