@@ -6,8 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.IntentFilter;
@@ -25,6 +27,7 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 	public static JSONObject livraisonDatas;	
 	private connexionOpen connexionNotif;
 	private boolean flagConnectivity;
+	public static boolean isConnectionEnabled;
 	public static Location location;
 	
 	@Override
@@ -37,17 +40,22 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         this.registerReceiver(connexionNotif, filter);
+        this.updateConnectivity();
 		
-		JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
-		try {
-			getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        if (LivraisonActivity.isConnectionEnabled) {
+			JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
+			try {
+				getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}        	
+        } else {
+        	this.buildAlertMessageNoConnection();
+        }
 	}
 	
 	public void onBackPressed() {
@@ -167,16 +175,21 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				NetworkInfo wifiNetInfo =   connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 				NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 				
-				if(flagConnectivity && (wifiNetInfo.isConnected() || mobNetInfo.isConnected()))
+				if(wifiNetInfo.isConnected() || mobNetInfo.isConnected())
 				{
-					JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
-			    	try {
-						getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						e.printStackTrace();
+					LivraisonActivity.isConnectionEnabled = true;
+					if (flagConnectivity) {
+						JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
+				    	try {
+							getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							e.printStackTrace();
+						}
 					}
+				} else {
+					LivraisonActivity.isConnectionEnabled = false;
 				}
 			}
 			
@@ -186,6 +199,18 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 			
 					
 		}		
+	}
+	
+	public void updateConnectivity() {
+		ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wifiNetInfo =   connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		
+		if(wifiNetInfo.isConnected() || mobNetInfo.isConnected()) {
+			LivraisonActivity.isConnectionEnabled = true;
+		} else {
+			LivraisonActivity.isConnectionEnabled = false;
+		}
 	}
 
 	@Override
@@ -210,6 +235,18 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 	public void onProviderDisabled(String provider) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	private void buildAlertMessageNoConnection() {
+	    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setMessage("Votre connexion semble être désactivée, nous ne pouvons actualiser les données")
+	           .setPositiveButton("D'accord", new DialogInterface.OnClickListener() {
+	               public void onClick(final DialogInterface dialog, final int id) {
+	                    dialog.dismiss();
+	               }
+	           });
+	    final AlertDialog alert = builder.create();
+	    alert.show();
 	}
 	
 	

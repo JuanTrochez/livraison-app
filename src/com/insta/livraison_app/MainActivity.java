@@ -139,22 +139,15 @@ public class MainActivity extends Activity {
 	}
 	public void onStart(){
 		super.onStart();
-		
+		Toast.makeText(this, "on start main activity", Toast.LENGTH_LONG).show();
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		String username = prefs.getString("username", "");
 		String password = prefs.getString("password", "");
 		
 		if(!username.equals("") && !password.equals(""))
 		{
-			String allConcat = username.concat("|".concat(password).concat("|".concat(date)));
-			String result = Base64.encodeToString(allConcat.getBytes(), Base64.DEFAULT);
-			try {
-				connect(username,password,findViewById(android.R.id.content),result);
-			}catch (InterruptedException e) {
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				e.printStackTrace();
-			}
+			Intent intent = new Intent(this, LivraisonActivity.class);
+			startActivity(intent);
 		 }
 	}
 	
