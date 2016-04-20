@@ -45,23 +45,24 @@ public final class R {
         public static final int Password=0x7f090002;
         public static final int SaveData=0x7f090004;
         public static final int ShowPassWord=0x7f090003;
-        public static final int action_settings=0x7f090016;
-        public static final int adresse_Client=0x7f09000c;
-        public static final int adresse_list=0x7f090012;
-        public static final int client_list=0x7f090011;
-        public static final int date_list=0x7f090013;
+        public static final int action_settings=0x7f090017;
+        public static final int adresse_Client=0x7f09000d;
+        public static final int adresse_list=0x7f090013;
+        public static final int client_list=0x7f090012;
+        public static final int date_list=0x7f090014;
         public static final int detail_fragment=0x7f090008;
-        public static final int dismiss=0x7f090015;
-        public static final int distance_list=0x7f090014;
+        public static final int dismiss=0x7f090016;
+        public static final int distance_list=0x7f090015;
         public static final int email_Client=0x7f09000b;
-        public static final int imageCall=0x7f09000f;
-        public static final int imageSms=0x7f090010;
+        public static final int imageCall=0x7f090010;
+        public static final int imageGPS=0x7f09000c;
+        public static final int imageSms=0x7f090011;
         public static final int imageView=0x7f090000;
         public static final int list_fragment=0x7f090007;
         public static final int nom_Client=0x7f090009;
         public static final int prenom_Client=0x7f09000a;
-        public static final int statut_Client=0x7f09000d;
-        public static final int telephone_Client=0x7f09000e;
+        public static final int statut_Client=0x7f09000e;
+        public static final int telephone_Client=0x7f09000f;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
