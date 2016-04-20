@@ -11,6 +11,8 @@ import android.app.Activity;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.method.PasswordTransformationMethod;
@@ -117,8 +119,14 @@ public class MainActivity extends Activity {
 	
 	public void connect(String login, String password, View v, String result) throws InterruptedException, ExecutionException
 	{
-		JsonLoader getJsonConnection = new JsonLoader(login.concat("|".concat(password)), v, (CheckBox)findViewById(R.id.SaveData));
-		getJsonConnection.execute("http://livraison-app.esy.es/?json=login&token=".concat(result)).get();
+
+		ConnectivityManager connectivityManager = (ConnectivityManager) this.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wifiNetInfo =   connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		if (wifiNetInfo.isConnected() || mobNetInfo.isConnected()) {
+			JsonLoader getJsonConnection = new JsonLoader(login.concat("|".concat(password)), v, (CheckBox)findViewById(R.id.SaveData));
+			getJsonConnection.execute("http://livraison-app.esy.es/?json=login&token=".concat(result)).get();
+		}
 	}
 	
 	public void onResume(){

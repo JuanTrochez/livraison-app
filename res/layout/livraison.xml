@@ -6,6 +6,16 @@
     android:paddingTop="10dp"
     android:background="@android:color/white" >
     
+    
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:textColor="@color/darkGreen"
+		android:text="LISTE DES LIVRAISONS"      
+		android:paddingRight="20dp"
+		android:paddingLeft="20dp"
+		android:paddingBottom="10dp" />
+    
     <fragment
         class="com.insta.livraison_app.LivraisonListFragment" 
         android:id="@+id/list_fragment" 
