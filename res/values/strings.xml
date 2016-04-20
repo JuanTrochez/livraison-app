@@ -10,6 +10,7 @@
 	<string name="Envoyer">Connexion</string>
 	<string name="ShowPassWord">Cacher le mot de passe</string>
 	<string name="Appeler">Appeler</string>
+	<string name="EnvoyerSms">Envoyer SMS</string>
 	<string name="SaveData">Rester connecté</string>
 	
 </resources>
