@@ -65,7 +65,7 @@ public class LivraisonAppDataSource {
 		return livraisons;
 	}
 	
-	public List<String> getAll() {
+	public int getAll() {
 		List<String> users = new ArrayList<String>(); 
 		String selectQuery = "SELECT * FROM " + LivraisonAppDataSource.LIVRAISON_TABLE_NAME;
 		Cursor cursor = bdd.rawQuery(selectQuery, null);
@@ -76,7 +76,7 @@ public class LivraisonAppDataSource {
 			cursor.moveToNext();
 		}
 		cursor.close();
-		return users;
+		return cursor.getCount();
 	}
 	
 	public int isLivraisonInDb(int id) {
@@ -109,9 +109,9 @@ public class LivraisonAppDataSource {
 		return bdd.insert(LivraisonAppDataSource.LIVRAISON_TABLE_NAME, null, values);
 	}
 	
-	public void deleteAll() {
-		bdd.delete(LivraisonAppDataSource.LIVRAISON_TABLE_NAME, "1=1", null);
-	}
+//	public void deleteAll() {
+//		bdd.delete(LivraisonAppDataSource.LIVRAISON_TABLE_NAME, "1=1", null);
+//	}
 	
 	public void open () throws SQLException
 	{

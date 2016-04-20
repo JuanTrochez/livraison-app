@@ -68,7 +68,7 @@ public class LivraisonActivity extends FragmentActivity {
 		ClientDataSource.open();
 		LivraisonDataSource.open();
 		
-		LivraisonDataSource.deleteAll();
+//		LivraisonDataSource.deleteAll();
 		
 		for (int i = 0; i < lastDaysLivraisons.length(); i++) {
 
@@ -76,7 +76,7 @@ public class LivraisonActivity extends FragmentActivity {
 			
 			int id = Integer.parseInt(livraison.getString("id"));
 
-			if (LivraisonDataSource.isLivraisonInDb(id) == 0) {
+//			if (LivraisonDataSource.isLivraisonInDb(id) == 0) {
 				String adresse = livraison.getString("adresse");
 				String numero = livraison.getString("numero");
 				String postal = livraison.getString("code_postal");
@@ -103,7 +103,7 @@ public class LivraisonActivity extends FragmentActivity {
 				LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
 						longitude, date, duration, distance, statut, client_id, livreur_id);
 				
-			}			
+//			}			
 		}
 		
 		for (int i = 0; i < dailyLivraisons.length(); i++) {
@@ -111,7 +111,7 @@ public class LivraisonActivity extends FragmentActivity {
 			JSONObject livraison = dailyLivraisons.getJSONObject(i);
 					
 			int id = Integer.parseInt(livraison.getString("id"));
-			if (LivraisonDataSource.isLivraisonInDb(id) == 0) {
+//			if (LivraisonDataSource.isLivraisonInDb(id) == 0) {
 				String adresse = livraison.getString("adresse");
 				String numero = livraison.getString("numero");
 				String postal = livraison.getString("code_postal");
@@ -138,7 +138,7 @@ public class LivraisonActivity extends FragmentActivity {
 				LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
 						longitude, date, duration, distance, statut, client_id, livreur_id);
 				
-			}
+//			}
 		}		
 		ClientDataSource.close();
 		LivraisonDataSource.close();

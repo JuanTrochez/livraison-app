@@ -27,13 +27,13 @@ public class LivraisonListFragment extends ListFragment {
 	LivraisonDetailFragment detailView;
 	private LivraisonAdapter adapter;
 	public static String dbUpdated = "dbUpdated";
-	private broadcastDbUpdate broadcastDbUpdate;
+	private BroadcastDbUpdate broadcastDbUpdate;
 	
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		
 
-		broadcastDbUpdate = new broadcastDbUpdate();
+		broadcastDbUpdate = new BroadcastDbUpdate();
 		IntentFilter filter = new IntentFilter();
 		filter.addAction(LivraisonListFragment.dbUpdated);
         getActivity().registerReceiver(broadcastDbUpdate, filter);
@@ -44,15 +44,16 @@ public class LivraisonListFragment extends ListFragment {
 		clientDataSource.open();	
 		Livraison.dailyLivraisons = LivraisonDataSource.getDailyLivraisons();
 		
+		int countLivraisons = LivraisonDataSource.getAll();
+		
+		Toast.makeText(this.getContext(), "rows in db" + countLivraisons, Toast.LENGTH_LONG).show();
+		
 		for (int i = 0; i < Livraison.dailyLivraisons.size(); i++) {
-			Toast.makeText(this.getContext(), "client : " + Livraison.dailyLivraisons.get(i).getClient_id(), Toast.LENGTH_SHORT).show();
-//			Client client = Livraison.dailyLivraisons.get(i).
 			Livraison.dailyLivraisons.get(i).setClient(clientDataSource.getClientById(Livraison.dailyLivraisons.get(i).getClient_id()));
 		}
 
-		clientDataSource.close();	
-		
-		String[] values = new String[]{"republique","voltaire","WindowsMobile","Blackberry","WebOs","Ubuntu","Windows7","Mac OS X","Linux","OS/2"};
+		LivraisonDataSource.close();
+		clientDataSource.close();
 		
 		adapter = new LivraisonAdapter(this.getContext(), Livraison.dailyLivraisons);
 		setListAdapter(adapter);
@@ -76,13 +77,11 @@ public class LivraisonListFragment extends ListFragment {
 		}		
 	}
 	
-	public class broadcastDbUpdate extends BroadcastReceiver {
+	public class BroadcastDbUpdate extends BroadcastReceiver {
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
-			Toast.makeText(context.getApplicationContext(), "broadcastDbUpdate", Toast.LENGTH_LONG).show();
-			
+						
 				try {
 					LivraisonActivity.updateLivraisonDb(LivraisonActivity.livraisonDatas, context);
 					
@@ -90,17 +89,16 @@ public class LivraisonListFragment extends ListFragment {
 					LivraisonAppDataSource LivraisonDataSource = new LivraisonAppDataSource(getActivity().getApplicationContext());
 					LivraisonDataSource.open();	
 					clientDataSource.open();	
-					Livraison.dailyLivraisons = LivraisonDataSource.getDailyLivraisons();
-					
+					Livraison.dailyLivraisons = LivraisonDataSource.getDailyLivraisons();				
+
+					int countLivraisons = LivraisonDataSource.getAll();					
+					Toast.makeText(getActivity().getApplicationContext(), "rows in db" + countLivraisons, Toast.LENGTH_LONG).show();
+
 					for (int i = 0; i < Livraison.dailyLivraisons.size(); i++) {
-						Toast.makeText(getActivity().getApplicationContext(), "client : " + Livraison.dailyLivraisons.get(i).getClient_id(), Toast.LENGTH_SHORT).show();
-//						Client client = Livraison.dailyLivraisons.get(i).
 						Livraison.dailyLivraisons.get(i).setClient(clientDataSource.getClientById(Livraison.dailyLivraisons.get(i).getClient_id()));
 					}
-
-					clientDataSource.close();	
-					
-					String[] values = new String[]{"republique","voltaire","WindowsMobile","Blackberry","WebOs","Ubuntu","Windows7","Mac OS X","Linux","OS/2"};
+					LivraisonDataSource.close();
+					clientDataSource.close();
 					
 					adapter = new LivraisonAdapter(getActivity().getApplicationContext(), Livraison.dailyLivraisons);
 					setListAdapter(adapter);
