@@ -58,6 +58,11 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		super.onResume();
 	}
 	
+	public void onStop(){
+		super.onStop();
+		this.unregisterReceiver(connexionNotif);
+	}
+	
 	public static void updateLivraisonDb(JSONObject datas, Context context) throws JSONException {
 		Toast.makeText(context.getApplicationContext(), "inserting in db", Toast.LENGTH_SHORT).show();
 		
