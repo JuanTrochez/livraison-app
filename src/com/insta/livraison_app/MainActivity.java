@@ -139,7 +139,7 @@ public class MainActivity extends Activity {
 	}
 	public void onStart(){
 		super.onStart();
-		Toast.makeText(this, "on start main activity", Toast.LENGTH_LONG).show();
+		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 		String username = prefs.getString("username", "");
 		String password = prefs.getString("password", "");

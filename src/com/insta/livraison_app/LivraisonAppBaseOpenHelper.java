@@ -28,7 +28,8 @@ public class LivraisonAppBaseOpenHelper extends SQLiteOpenHelper {
 														+ " nom TEXT NOT NULL,"
 														+ " prenom TEXT NOT NULL,"
 														+ " login TEXT NOT NULL,"
-														+ " password TEXT NOT NULL);");
+														+ " password TEXT NOT NULL"
+														+ " date TEXT NOT NULL);");
 		
 		db.execSQL("CREATE TABLE IF NOT EXISTS livraison ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
 														+ " id_webservice integer NOT NULL,"

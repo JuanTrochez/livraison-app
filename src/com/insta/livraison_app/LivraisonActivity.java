@@ -1,5 +1,9 @@
 package com.insta.livraison_app;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import org.json.JSONArray;
@@ -13,12 +17,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -47,16 +54,18 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
         this.updateConnectivity();
 		
         if (LivraisonActivity.isConnectionEnabled) {
-			JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
-			try {
-				getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}        	
+        	if (!isUpdatedToday()) {
+				JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
+				try {
+					getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+        	}
         } else {
         	this.buildAlertMessageNoConnection();
         }
@@ -76,7 +85,6 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 	}
 	
 	public static void updateLivraisonDb(JSONObject datas, Context context) throws JSONException {
-		Toast.makeText(context.getApplicationContext(), "inserting in db", Toast.LENGTH_SHORT).show();
 		
 		JSONObject livraisons = datas.getJSONObject("livraisons");
 		JSONArray lastDaysLivraisons = livraisons.getJSONArray("priority");
@@ -87,8 +95,6 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		ClientAppDataSource ClientDataSource = new ClientAppDataSource(context.getApplicationContext());
 		ClientDataSource.open();
 		LivraisonDataSource.open();
-		
-//		LivraisonDataSource.deleteAll();
 		
 		for (int i = 0; i < lastDaysLivraisons.length(); i++) {
 
@@ -162,8 +168,16 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		}		
 		ClientDataSource.close();
 		LivraisonDataSource.close();
+		
 
-		Toast.makeText(context.getApplicationContext(), "inserting in db", Toast.LENGTH_SHORT).show();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+	    Editor ed = prefs.edit();
+	    
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date today = (Date) Calendar.getInstance().getTime();
+		String compareDate = df.format(today);
+		ed.putString("date_update", compareDate);
+		ed.commit();
 		
 	}
 
@@ -171,8 +185,6 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			
-			Toast.makeText(context.getApplicationContext(), "broadcast receiver" + intent.getAction(), Toast.LENGTH_LONG).show();
 			
 			if (intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE")) {
 				ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -182,7 +194,7 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				if(wifiNetInfo.isConnected() || mobNetInfo.isConnected())
 				{
 					LivraisonActivity.isConnectionEnabled = true;
-					if (flagConnectivity) {
+					if (flagConnectivity && !isUpdatedToday()) {
 						JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
 				    	try {
 							getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
@@ -253,5 +265,26 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 	    alert.show();
 	}
 	
+	public boolean isUpdatedToday() {
+		Boolean result = false;
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		  Date today = (Date) Calendar.getInstance().getTime();
+		  String compareDate = df.format(today);
+		  try {
+			Date comp1 = df.parse(compareDate);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+			String dateUpdate = prefs.getString("date_update", "");
+			Date comp2 = df.parse(dateUpdate);
+			
+			if (comp1.compareTo(comp2) == 0) {
+		    	 result = true;
+		     }
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		return result;
+	}
 	
 }
