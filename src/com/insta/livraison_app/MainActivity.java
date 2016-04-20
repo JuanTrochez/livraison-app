@@ -8,8 +8,11 @@ import java.util.concurrent.ExecutionException;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ActionBar.LayoutParams;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -126,6 +129,8 @@ public class MainActivity extends Activity {
 		if (wifiNetInfo.isConnected() || mobNetInfo.isConnected()) {
 			JsonLoader getJsonConnection = new JsonLoader(login.concat("|".concat(password)), v, (CheckBox)findViewById(R.id.SaveData));
 			getJsonConnection.execute("http://livraison-app.esy.es/?json=login&token=".concat(result)).get();
+		} else {
+			this.buildAlertMessageNoConnection();
 		}
 	}
 	
@@ -151,5 +156,17 @@ public class MainActivity extends Activity {
 				e.printStackTrace();
 			}
 		 }
+	}
+	
+	private void buildAlertMessageNoConnection() {
+	    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setMessage("Votre connexion semble être désactivée, nous ne pouvons actualiser les données")
+	           .setPositiveButton("D'accord", new DialogInterface.OnClickListener() {
+	               public void onClick(final DialogInterface dialog, final int id) {
+	                    dialog.dismiss();
+	               }
+	           });
+	    final AlertDialog alert = builder.create();
+	    alert.show();
 	}
 }
