@@ -111,7 +111,7 @@ public class LivraisonAppDataSource {
 	
 	public long update(int id, int statut){
 		ContentValues values = new ContentValues(); 
-		values.put(LivraisonAppDataSource.LIVRAISON_COLUMN_STATUT, statut);		
+		values.put(LivraisonAppDataSource.LIVRAISON_COLUMN_STATUT, statut);
 		return bdd.update(LivraisonAppDataSource.LIVRAISON_TABLE_NAME, values, 
 				LivraisonAppDataSource.LIVRAISON_COLUMN_ID + " = " + id, null);
 	}

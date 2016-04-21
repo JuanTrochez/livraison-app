@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -42,28 +41,28 @@ public class LivraisonDetailFragment extends Fragment {
 		
 		
 		TextView tvNomClient = (TextView)getView().findViewById(R.id.nom_Client);
-		tvNomClient.setText("Nom: ".concat(client.getNom()));
+		tvNomClient.setText(client.getNom());
 		
 		TextView tvPrenomClient = (TextView)getView().findViewById(R.id.prenom_Client);
-		tvPrenomClient.setText("Prenom: ".concat(client.getPrenom()));
+		tvPrenomClient.setText(client.getPrenom());
 		
 		TextView tvEmailClient = (TextView)getView().findViewById(R.id.email_Client);
-		tvEmailClient.setText("Email: ".concat(client.getEmail()));
+		tvEmailClient.setText(client.getEmail());
 		
 		TextView tvAdresseClient = (TextView)getView().findViewById(R.id.adresse_Client);
-		tvAdresseClient.setText("Adresse: ".concat(livraison.getNumero().concat(" ".concat(livraison.getAdresse().concat(" ".concat(livraison.getVille()))))));
+		tvAdresseClient.setText(livraison.getNumero().concat(" ".concat(livraison.getAdresse().concat(", ".concat(livraison.getCodePostal().concat(" ".concat(livraison.getVille())))))));
 		
-		TextView tvStatutLivraison = (TextView)getView().findViewById(R.id.statut_Client);
-		if(livraison.getStatut() == 0)
-		{
-			tvStatutLivraison.setText("Statut: En cours");
-		}else if(livraison.getStatut() == 1)
-		{
-			tvStatutLivraison.setText("Statut: Terminé");
-		}	
+//		TextView tvStatutLivraison = (TextView)getView().findViewById(R.id.statut_Client);
+//		if(livraison.getStatut() == 0)
+//		{
+//			tvStatutLivraison.setText("Statut: En cours");
+//		}else if(livraison.getStatut() == 1)
+//		{
+//			tvStatutLivraison.setText("Statut: Terminé");
+//		}
 		
 		TextView tvTelephoneClient = (TextView)getView().findViewById(R.id.telephone_Client);
-		tvTelephoneClient.setText("Tel: ".concat(client.getTelephone()));
+		tvTelephoneClient.setText(client.getTelephone());
 		
 		callImage = (ImageView) getView().findViewById(R.id.imageCall);
 		
@@ -93,16 +92,9 @@ public class LivraisonDetailFragment extends Fragment {
 		gpsImage.setOnClickListener(new OnClickListener() {
 
 			@Override
-			public void onClick(View arg0) {
-				final LocationManager manager = (LocationManager) getActivity().getSystemService( Context.LOCATION_SERVICE );
-				
-				if(manager.isProviderEnabled(LocationManager.GPS_PROVIDER))
-				{
-					buildAlertMessageNoGps();
-				}
-				
+			public void onClick(View arg0) {				
 				Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
-						Uri.parse("http://maps.google.com/maps?saddr="+ LivraisonActivity.location.getLatitude()+","+ LivraisonActivity.location.getLongitude()+"&daddr="+livraison.getLatitude()+","+livraison.getLongitude()));
+				Uri.parse("http://maps.google.com/maps?daddr="+livraison.getLatitude()+","+livraison.getLongitude()));
 				startActivity(intent);
 			}
 		});

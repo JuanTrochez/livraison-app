@@ -2,24 +2,34 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:paddingRight="20dp"
+    android:paddingLeft="20dp"
+    android:paddingTop="10dp" >
+    
+    <TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" 
+		android:textColor="@color/darkGreen"
+		android:text="LISTE DES PRODUITS"   
+		android:paddingBottom="10dp" />
     
 	<ListView
         android:id="@android:id/list"
-        android:padding="10dp"
+    	android:layout_marginTop="10dp"
+    	android:layout_marginBottom="10dp"
     	android:textSize="20sp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="5" />
+        android:layout_height="wrap_content" />
 	
 	<Button
         android:id="@+id/ValiderProduit"
         android:background="@color/darkGreen"
         android:textColor="@color/white"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_weight="1"
-        android:text="@string/ValiderProduit"/>
+        android:text="@string/ValiderProduit"
+    	android:layout_marginTop="20dp"/>
 	
 </LinearLayout>

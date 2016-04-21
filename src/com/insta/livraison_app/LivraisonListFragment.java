@@ -46,8 +46,6 @@ public class LivraisonListFragment extends ListFragment {
 		
 		int countLivraisons = LivraisonDataSource.getAll();
 		
-		Toast.makeText(this.getContext(), "rows in db" + countLivraisons, Toast.LENGTH_LONG).show();
-		
 		for (int i = 0; i < Livraison.dailyLivraisons.size(); i++) {
 			Livraison.dailyLivraisons.get(i).setClient(clientDataSource.getClientById(Livraison.dailyLivraisons.get(i).getClient_id()));
 		}
@@ -64,7 +62,7 @@ public class LivraisonListFragment extends ListFragment {
 
 	public void onStop(){
 		super.onStop();
-		getActivity().unregisterReceiver(broadcastDbUpdate);
+//		getActivity().unregisterReceiver(broadcastDbUpdate);
 	}
 	
 	public void onListItemClick(ListView l, View v, int position, long id) {

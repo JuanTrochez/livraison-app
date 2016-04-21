@@ -4,8 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="horizontal"
     android:baselineAligned="false"
-    android:paddingRight="20dp"
-    android:paddingLeft="20dp"
     android:paddingTop="10dp" >
     
     <fragment

@@ -55,10 +55,11 @@ public class CustomAdapterProduit extends BaseAdapter{
 	     }
 	     
 	     TextView tvproduitdetailRef = (TextView) view.findViewById(R.id.produitdetailRef);
-	     tvproduitdetailRef.setText(values.get(position).getReference());
+	     tvproduitdetailRef.setText(values.get(position).getQuantite());
 	     
 	     TextView tvproduitdetailQuantite = (TextView) view.findViewById(R.id.produitdetailQuantite);
-	     tvproduitdetailQuantite.setText(values.get(position).getQuantite());
+	     tvproduitdetailQuantite.setText("(".concat(values.get(position).getReference().concat(" produit(s))")));
+//	     tvproduitdetailQuantite.setText("(".concat(values.get(position).getQuantite().concat(" produit(s)")));
 	     
 	     EditText et = (EditText) view.findViewById(R.id.produitdetailCommentaire);
 	     

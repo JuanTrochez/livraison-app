@@ -50,7 +50,7 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 	public static JSONObject livraisonDatas;	
 	private connexionOpen connexionNotif;
 	private boolean flagConnectivity;
-	public static boolean isConnectionEnabled;
+	public static boolean isConnectionEnabled = false;
 	public static Location location;
 	
 	@Override
@@ -98,7 +98,7 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 	
 	public void onStop(){
 		super.onStop();
-		this.unregisterReceiver(connexionNotif);
+//		this.unregisterReceiver(connexionNotif);
 	}
 	
 	public static void updateLivraisonDb(JSONObject datas, Context context) throws JSONException {
