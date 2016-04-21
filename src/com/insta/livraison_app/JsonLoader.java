@@ -9,6 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -88,7 +89,7 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 		try {
 			JSONObject jsonObject = new JSONObject(json.toString());
 			JSONObject resultats = jsonObject.getJSONObject("infos");
-			JSONObject datas = jsonObject.getJSONObject("data");
+//			JSONArray datas = jsonObject.getJSONArray("data");
 			Choice choice = null;
 			
 			try{
@@ -131,10 +132,10 @@ public class JsonLoader extends AsyncTask<String,Integer,StringBuffer>{
 					}
 					break;
 				case livraison:
-					Toast.makeText(mainActivity.get().getContext(), "livraison getted", Toast.LENGTH_LONG).show();
-					LivraisonActivity.livraisonDatas = datas;
-					Intent intentMessage = new Intent(LivraisonListFragment.dbUpdated);
-					mainActivity.get().getContext().sendBroadcast(intentMessage);
+//					Toast.makeText(mainActivity.get().getContext(), "livraison getted", Toast.LENGTH_LONG).show();
+//					LivraisonActivity.livraisonDatas = datas;
+//					Intent intentMessage = new Intent(LivraisonListFragment.dbUpdated);
+//					mainActivity.get().getContext().sendBroadcast(intentMessage);
 					break;
 				default :
 				

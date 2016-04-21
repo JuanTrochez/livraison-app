@@ -14,7 +14,7 @@ public class ProduitAppDataSource {
 	private SQLiteDatabase bdd;
 	private LivraisonAppBaseOpenHelper baseSQLite;
 
-	private static final String PRODUIT_TABLE_NAME = "livraison";
+	private static final String PRODUIT_TABLE_NAME = "produit";
 	private static final String PRODUIT_COLUMN_ID = "id";
 	private static final String PRODUIT_COLUMN_ID_WEBSERVICE = "id_webservice";
 	private static final String PRODUIT_COLUMN_REFERENCE = "reference";
@@ -45,8 +45,8 @@ public class ProduitAppDataSource {
 	public ArrayList<Produit> getAllProduitToUpdateWebservice() {
 		ArrayList<Produit> produits = new ArrayList<Produit>(); 
 		String selectQuery = "SELECT p.id_webservice, p.reference, p.quantite, p.statut, p.commentaire, p.livraison_id"
-							+ " FROM " + ProduitAppDataSource.PRODUIT_TABLE_NAME + " p"
-							+ " JOIN livraison l"
+							+ " FROM " + ProduitAppDataSource.PRODUIT_TABLE_NAME + " AS p"
+							+ " JOIN livraison AS l"
 							+ "	ON p.livraison_id = l.id"
 							+ " WHERE l.statut = 2";
 		Cursor cursor = bdd.rawQuery(selectQuery, null);

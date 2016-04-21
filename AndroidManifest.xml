@@ -38,6 +38,10 @@
             android:name=".LivraisonDetailActivity"
             android:label="@string/app_name" >
         </activity>
+        <activity
+            android:name=".ProduitList"
+            android:label="@string/app_name" >
+        </activity>
     </application>
 	
 </manifest>

@@ -2,6 +2,7 @@ package com.insta.livraison_app;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +40,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
+import android.util.Base64;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
@@ -55,6 +58,11 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.livraison);
 		
+		ProduitAppDataSource produitDataSource = new ProduitAppDataSource(this);
+		produitDataSource.open();
+		Produit.produit = produitDataSource.getAllProduitToUpdateWebservice();
+		produitDataSource.close();
+		
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 		
@@ -67,14 +75,21 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		
         if (LivraisonActivity.isConnectionEnabled) {
         	if (!isUpdatedToday()) {
-				JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
-				try {
-					getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				} catch (ExecutionException e) {
+        		PostRequestAsync request = new PostRequestAsync(this, Produit.produit);
+        		String token = LivraisonActivity.generateToken(this);
+        		try {
+					request.execute("http://172.16.16.94/livraison-app-webservice/?json=livraison&token="+ URLEncoder.encode( token,"UTF-8"));
+				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
+//				JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
+//				try {
+//					getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
+//				} catch (InterruptedException e) {
+//					e.printStackTrace();
+//				} catch (ExecutionException e) {
+//					e.printStackTrace();
+//				}
         	}
         } else {
         	this.buildAlertMessageNoConnection();
@@ -138,7 +153,7 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				
 				ClientDataSource.insertClient(client_id, client_nom, client_prenom, client_email, client_telephone);		
 				
-				JSONArray produits = detail.getJSONArray("produit");
+				JSONArray produits = detail.getJSONArray("produits");
 				
 				for(int j =0; j < produits.length(); j++){
 					JSONObject produit = produits.getJSONObject(j);
@@ -188,7 +203,7 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				
 				ClientDataSource.insertClient(client_id, client_nom, client_prenom, client_email, client_telephone);
 				
-				JSONArray produits = detail.getJSONArray("produit");
+				JSONArray produits = detail.getJSONArray("produits");
 				
 				for(int j =0; j < produits.length(); j++){
 					JSONObject produit = produits.getJSONObject(j);
@@ -247,16 +262,24 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				
 				if(wifiNetInfo.isConnected() || mobNetInfo.isConnected())
 				{
+					
 					LivraisonActivity.isConnectionEnabled = true;
 					if (flagConnectivity && !isUpdatedToday()) {
-						JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
-				    	try {
-							getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						} catch (ExecutionException e) {
+						PostRequestAsync request = new PostRequestAsync(context, Produit.produit);
+		        		String token = LivraisonActivity.generateToken(context);
+		        		try {
+							request.execute("http://172.16.16.94/livraison-app-webservice/?json=livraison&token="+ URLEncoder.encode( token,"UTF-8"));
+						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}
+//						JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
+//				    	try {
+//							getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
+//						} catch (InterruptedException e) {
+//							e.printStackTrace();
+//						} catch (ExecutionException e) {
+//							e.printStackTrace();
+//						}
 					}
 				} else {
 					LivraisonActivity.isConnectionEnabled = false;
@@ -326,55 +349,19 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 			Date comp1 = df.parse(compareDate);
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 			String dateUpdate = prefs.getString("date_update", "");
-			Date comp2 = df.parse(dateUpdate);
 			
-			if (comp1.compareTo(comp2) == 0) {
-		    	 result = true;
-		     }
+			if(!dateUpdate.equals(""))
+			{
+				Date comp2 = df.parse(dateUpdate);
+				
+				if (comp1.compareTo(comp2) == 0) {
+			    	 result = true;
+			     }
+			}		
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} 
 		return result;
-	}
-	
-	public static void postData(Context context, ArrayList<Produit> produit)
-	{
-		HttpClient httpclient = new DefaultHttpClient();
-		String token = generateToken(context);
-	    HttpPost httppost = new HttpPost("http://livraison-app.esy.es/?json=livraison&token="+ token);
-	    
-	    ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-	    
-	    for(int i = 0; i < produit.size(); i++){
-	    	
-	    	Produit value = produit.get(0);
-	    	
-	    	nameValuePairs.add(new BasicNameValuePair("id"+i, Integer.toString(value.getIdWebService())));
-		    nameValuePairs.add(new BasicNameValuePair("statut"+i, Integer.toString(value.getStatut())));
-		    nameValuePairs.add(new BasicNameValuePair("commentaire"+i, value.getCommentaire()));
-	    }
-	    try {
-			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-			
-			// Execute HTTP Post Request
-	        HttpResponse response = httpclient.execute(httppost);
-	        
-	        JSONObject jsonObject = new JSONObject(response.toString());
-	        JSONObject datas = jsonObject.getJSONObject("data");
-	        
-	        LivraisonActivity.livraisonDatas = datas;
-	        Intent intentMessage = new Intent(LivraisonListFragment.dbUpdated);
-			context.sendBroadcast(intentMessage);
-	        
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
 	}
 	
 	public static String generateToken(Context context)
@@ -387,9 +374,10 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		String login = prefs.getString("username", "");
 		String password = prefs.getString("password", "");
 		
+		String allConcat = login+"|"+password+"|"+date;
+		String result = Base64.encodeToString(allConcat.getBytes(), Base64.URL_SAFE);
 		
-		
-		return login+"|"+password+"|"+date;
+		return result;
 	}
 	
 }

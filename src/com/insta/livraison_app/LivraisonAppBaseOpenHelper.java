@@ -28,7 +28,7 @@ public class LivraisonAppBaseOpenHelper extends SQLiteOpenHelper {
 														+ " nom TEXT NOT NULL,"
 														+ " prenom TEXT NOT NULL,"
 														+ " login TEXT NOT NULL,"
-														+ " password TEXT NOT NULL"
+														+ " password TEXT NOT NULL,"
 														+ " date TEXT NOT NULL);");
 		
 		db.execSQL("CREATE TABLE IF NOT EXISTS livraison ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -49,7 +49,7 @@ public class LivraisonAppBaseOpenHelper extends SQLiteOpenHelper {
 														+ " FOREIGN KEY (livreur_id) REFERENCES livreur(id));");
 		
 		db.execSQL("CREATE TABLE IF NOT EXISTS produit ( id INTEGER PRIMARY KEY AUTOINCREMENT,"
-														+ " id_webservice INTEGER NOT NULL"
+														+ " id_webservice INTEGER NOT NULL,"
 														+ " reference TEXT NOT NULL,"
 														+ " quantite TEXT NOT NULL,"
 														+ " statut INTEGER NOT NULL,"

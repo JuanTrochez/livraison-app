@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ public class LivraisonDetailFragment extends Fragment {
 	private ImageView callImage;
 	private ImageView smsImage;
 	private ImageView gpsImage;
+	private Button ListProduits;
 	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.livraison_detail, container, false);
@@ -104,6 +106,18 @@ public class LivraisonDetailFragment extends Fragment {
 				startActivity(intent);
 			}
 		});
+		
+		ListProduits = (Button) getView().findViewById(R.id.ListProduits);
+		
+		ListProduits.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View arg0) {
+				Intent intent = new Intent(getActivity(), ProduitList.class);
+				startActivity(intent);
+			}
+		});
+		
 		
 	}	
 	public void onResume()
