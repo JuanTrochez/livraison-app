@@ -71,10 +71,8 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				try {
 					getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (ExecutionException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
         	}
@@ -105,8 +103,10 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		
 		LivraisonAppDataSource LivraisonDataSource = new LivraisonAppDataSource(context.getApplicationContext());		
 		ClientAppDataSource ClientDataSource = new ClientAppDataSource(context.getApplicationContext());
+		ProduitAppDataSource produitDataSource = new ProduitAppDataSource(context.getApplicationContext());
 		ClientDataSource.open();
 		LivraisonDataSource.open();
+		produitDataSource.open();
 		
 		for (int i = 0; i < lastDaysLivraisons.length(); i++) {
 
@@ -138,8 +138,23 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				
 				ClientDataSource.insertClient(client_id, client_nom, client_prenom, client_email, client_telephone);		
 				
+				JSONArray produits = detail.getJSONArray("produit");
+				
+				for(int j =0; j < produits.length(); j++){
+					JSONObject produit = produits.getJSONObject(j);
+					
+					int idWebService = Integer.parseInt(produit.getString("id"));
+					String reference = produit.getString("reference");
+					String quantite = produit.getString("quantite");
+					String commentaire = produit.getString("commentaire");
+					int statutProduit = Integer.parseInt(produit.getString("statut"));
+					int livraisonId = Integer.parseInt(produit.getString("livraison_id"));
+					
+					produitDataSource.insertProduit(idWebService, reference, quantite, statutProduit, commentaire, livraisonId);
+				}
 				LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
 						longitude, date, duration, distance, statut, client_id, livreur_id);
+				
 				
 			}			
 		}
@@ -173,6 +188,21 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				
 				ClientDataSource.insertClient(client_id, client_nom, client_prenom, client_email, client_telephone);
 				
+				JSONArray produits = detail.getJSONArray("produit");
+				
+				for(int j =0; j < produits.length(); j++){
+					JSONObject produit = produits.getJSONObject(j);
+					
+					int idWebService = Integer.parseInt(produit.getString("id"));
+					String reference = produit.getString("reference");
+					String quantite = produit.getString("quantite");
+					String commentaire = produit.getString("commentaire");
+					int statutProduit = Integer.parseInt(produit.getString("statut"));
+					int livraisonId = Integer.parseInt(produit.getString("livraison_id"));
+					
+					produitDataSource.insertProduit(idWebService, reference, quantite, statutProduit, commentaire, livraisonId);
+				}
+				
 				LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
 						longitude, date, duration, distance, statut, client_id, livreur_id);
 				
@@ -180,11 +210,18 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		}	
 		
 		for(int i = 0 ; i < updateLivraisons.length(); i++){
-			//TODO get the livraison ID and the statut / create the methode update
+			JSONObject update = updateLivraisons.getJSONObject(i);
+			
+			int id = Integer.parseInt(update.getString("id"));
+			int statut = Integer.parseInt(update.getString("statut"));
+			
+			LivraisonDataSource.update(id, statut);
+			
 		}
 		
 		ClientDataSource.close();
 		LivraisonDataSource.close();
+		produitDataSource.close();
 		
 
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
@@ -254,19 +291,16 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
 		
 	}
 	
@@ -298,17 +332,16 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		    	 result = true;
 		     }
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
 		return result;
 	}
 	
-	//TODO méthode post request ( contient http blabla+envoyer token dans le lien + UpdateStatic data LivraisonActivity.livraisonDatas = datas (data dans la reponse de la requete);+sendBROADCAST
 	public static void postData(Context context, ArrayList<Produit> produit)
 	{
 		HttpClient httpclient = new DefaultHttpClient();
-	    HttpPost httppost = new HttpPost("http://www.yoursite.com/script.php");
+		String token = generateToken(context);
+	    HttpPost httppost = new HttpPost("http://livraison-app.esy.es/?json=livraison&token="+ token);
 	    
 	    ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
 	    
@@ -326,7 +359,12 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 			// Execute HTTP Post Request
 	        HttpResponse response = httpclient.execute(httppost);
 	        
+	        JSONObject jsonObject = new JSONObject(response.toString());
+	        JSONObject datas = jsonObject.getJSONObject("data");
 	        
+	        LivraisonActivity.livraisonDatas = datas;
+	        Intent intentMessage = new Intent(LivraisonListFragment.dbUpdated);
+			context.sendBroadcast(intentMessage);
 	        
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
@@ -334,17 +372,24 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 	}
 	
-	//TODO méthode generate token
-	public String generateToken()
+	public static String generateToken(Context context)
 	{
-		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yy");
+		String date = df.format(c.getTime());
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		String login = prefs.getString("username", "");
 		String password = prefs.getString("password", "");
 		
-		return "";
+		
+		
+		return login+"|"+password+"|"+date;
 	}
 	
 }
