@@ -1,5 +1,7 @@
 package com.insta.livraison_app;
 
+import java.util.ArrayList;
+
 public class Produit {
 	
 	private int idWebService;
@@ -8,6 +10,7 @@ public class Produit {
 	private int statut;
 	private String commentaire;
 	private int livraisonId;
+	public static ArrayList<Produit> getProduitByLivraisonID;
 	
 	
 	public int getIdWebService() {
