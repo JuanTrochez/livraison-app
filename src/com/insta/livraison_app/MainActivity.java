@@ -57,8 +57,8 @@ public class MainActivity extends Activity {
 					if(!loginET.getText().toString().equals("") && !passwordET.getText().toString().equals(""))
 					{
 						String login = loginET.getText().toString();
-						String password1 = ConvertSha1.SHA1("lol");
-						String password = passwordET.getText().toString();
+						String password = ConvertSha1.SHA1(passwordET.getText().toString());
+//						String password1 = passwordET.getText().toString();
 						
 						
 						String allConcat = login.concat("|".concat(password).concat("|".concat(date)));
@@ -141,10 +141,9 @@ public class MainActivity extends Activity {
 		super.onStart();
 		
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		String username = prefs.getString("username", "");
-		String password = prefs.getString("password", "");
+		String remember = prefs.getString("remember", "");
 		
-		if(!username.equals("") && !password.equals(""))
+		if(remember.equals("yes"))
 		{
 			Intent intent = new Intent(this, LivraisonActivity.class);
 			startActivity(intent);
