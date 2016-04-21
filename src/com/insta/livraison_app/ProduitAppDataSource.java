@@ -42,6 +42,32 @@ public class ProduitAppDataSource {
 		return cursor.getCount();
 	}
 	
+	public ArrayList<Produit> getAllProduitToUpdateWebservice() {
+		ArrayList<Produit> produits = new ArrayList<Produit>(); 
+		String selectQuery = "SELECT p.id_webservice, p.reference, p.quantite, p.statut, p.commentaire, p.livraison_id"
+							+ " FROM " + ProduitAppDataSource.PRODUIT_TABLE_NAME + " p"
+							+ " JOIN livraison l"
+							+ "	ON p.livraison_id = l.id"
+							+ " WHERE l.statut = 2";
+		Cursor cursor = bdd.rawQuery(selectQuery, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) { 
+			Produit produit = new Produit();
+			produit.setIdWebService(Integer.parseInt(cursor.getString(0)));
+			produit.setReference(cursor.getString(1));
+			produit.setQuantite(cursor.getString(2));
+			produit.setStatut(Integer.parseInt(cursor.getString(3)));
+			produit.setCommentaire(cursor.getString(4));
+			produit.setLivraisonId(Integer.parseInt(cursor.getString(5)));
+			
+			produits.add(produit); 
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return produits;
+	}
+	
 	public long insertProduit(int id_webservice, String reference, String quantite, int statut, 
 			String commentaire, int livraison_id) {
 		
@@ -54,6 +80,14 @@ public class ProduitAppDataSource {
 		values.put(ProduitAppDataSource.PRODUIT_COLUMN_LIVRAISON_ID, livraison_id);
 		
 		return bdd.insert(ProduitAppDataSource.PRODUIT_TABLE_NAME, null, values);
+	}
+	
+	public long update(int id, String commentaire, int statut){
+		ContentValues values = new ContentValues(); 
+		values.put(ProduitAppDataSource.PRODUIT_COLUMN_STATUT, commentaire);
+		values.put(ProduitAppDataSource.PRODUIT_COLUMN_COMMENTAIRE, statut);		
+		return bdd.update(ProduitAppDataSource.PRODUIT_TABLE_NAME, values, 
+				ProduitAppDataSource.PRODUIT_COLUMN_ID + " = " + id, null);
 	}
 	
 	public void open () throws SQLException
