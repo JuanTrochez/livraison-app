@@ -1,11 +1,23 @@
 package com.insta.livraison_app;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,7 +101,7 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		JSONObject livraisons = datas.getJSONObject("livraisons");
 		JSONArray lastDaysLivraisons = livraisons.getJSONArray("priority");
 		JSONArray dailyLivraisons = livraisons.getJSONArray("day");
-
+		JSONArray updateLivraisons = livraisons.getJSONArray("update");
 		
 		LivraisonAppDataSource LivraisonDataSource = new LivraisonAppDataSource(context.getApplicationContext());		
 		ClientAppDataSource ClientDataSource = new ClientAppDataSource(context.getApplicationContext());
@@ -165,7 +177,12 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 						longitude, date, duration, distance, statut, client_id, livreur_id);
 				
 			}
-		}		
+		}	
+		
+		for(int i = 0 ; i < updateLivraisons.length(); i++){
+			//TODO get the livraison ID and the statut / create the methode update
+		}
+		
 		ClientDataSource.close();
 		LivraisonDataSource.close();
 		
@@ -285,6 +302,49 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 			e.printStackTrace();
 		} 
 		return result;
+	}
+	
+	//TODO méthode post request ( contient http blabla+envoyer token dans le lien + UpdateStatic data LivraisonActivity.livraisonDatas = datas (data dans la reponse de la requete);+sendBROADCAST
+	public static void postData(Context context, ArrayList<Produit> produit)
+	{
+		HttpClient httpclient = new DefaultHttpClient();
+	    HttpPost httppost = new HttpPost("http://www.yoursite.com/script.php");
+	    
+	    ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+	    
+	    for(int i = 0; i < produit.size(); i++){
+	    	
+	    	Produit value = produit.get(0);
+	    	
+	    	nameValuePairs.add(new BasicNameValuePair("id"+i, Integer.toString(value.getIdWebService())));
+		    nameValuePairs.add(new BasicNameValuePair("statut"+i, Integer.toString(value.getStatut())));
+		    nameValuePairs.add(new BasicNameValuePair("commentaire"+i, value.getCommentaire()));
+	    }
+	    try {
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			
+			// Execute HTTP Post Request
+	        HttpResponse response = httpclient.execute(httppost);
+	        
+	        
+	        
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	//TODO méthode generate token
+	public String generateToken()
+	{
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+		String login = prefs.getString("username", "");
+		String password = prefs.getString("password", "");
+		
+		return "";
 	}
 	
 }
