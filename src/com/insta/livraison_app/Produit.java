@@ -11,7 +11,7 @@ public class Produit {
 	private String commentaire;
 	private int livraisonId;
 	public static ArrayList<Produit> produit = new ArrayList<Produit>();
-	public static ArrayList<Produit> getProduitByLivraisonID;
+	public static int id_livraisonList;
 	
 	public int getIdWebService() {
 		return idWebService;

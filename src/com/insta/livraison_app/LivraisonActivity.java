@@ -78,18 +78,10 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
         		PostRequestAsync request = new PostRequestAsync(this, Produit.produit);
         		String token = LivraisonActivity.generateToken(this);
         		try {
-					request.execute("http://172.16.16.94/livraison-app-webservice/?json=livraison&token="+ URLEncoder.encode( token,"UTF-8"));
+					request.execute("http://livraison-app.esy.es/?json=livraison&token="+ URLEncoder.encode( token,"UTF-8"));
 				} catch (UnsupportedEncodingException e) {
 					e.printStackTrace();
 				}
-//				JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
-//				try {
-//					getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				} catch (ExecutionException e) {
-//					e.printStackTrace();
-//				}
         	}
         } else {
         	this.buildAlertMessageNoConnection();
@@ -276,18 +268,10 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 						PostRequestAsync request = new PostRequestAsync(context, Produit.produit);
 		        		String token = LivraisonActivity.generateToken(context);
 		        		try {
-							request.execute("http://172.16.16.94/livraison-app-webservice/?json=livraison&token="+ URLEncoder.encode( token,"UTF-8"));
+							request.execute("http://livraison-app.esy.es/?json=livraison&token="+ URLEncoder.encode( token,"UTF-8"));
 						} catch (UnsupportedEncodingException e) {
 							e.printStackTrace();
 						}
-//						JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
-//				    	try {
-//							getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
-//						} catch (InterruptedException e) {
-//							e.printStackTrace();
-//						} catch (ExecutionException e) {
-//							e.printStackTrace();
-//						}
 					}
 				} else {
 					LivraisonActivity.isConnectionEnabled = false;

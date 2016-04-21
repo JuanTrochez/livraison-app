@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.widget.LinearLayout;
 
 public class CustomAdapterProduit extends BaseAdapter{
 	
@@ -46,9 +46,9 @@ public class CustomAdapterProduit extends BaseAdapter{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		
-		RelativeLayout view = (RelativeLayout) convertView;
+		LinearLayout view = (LinearLayout) convertView;
 	     if (view == null) {
-	          view = (RelativeLayout) mInflater.inflate(R.layout.produitlistdetail, parent, false);
+	          view = (LinearLayout) mInflater.inflate(R.layout.produitlistdetail, parent, false);
 	     }
 	     
 	     TextView tvproduitdetailRef = (TextView) view.findViewById(R.id.produitdetailRef);

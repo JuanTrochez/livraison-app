@@ -114,6 +114,7 @@ public class LivraisonDetailFragment extends Fragment {
 			@Override
 			public void onClick(View arg0) {
 				Intent intent = new Intent(getActivity(), ProduitList.class);
+				Produit.id_livraisonList =  livraison.getId_webService();
 				startActivity(intent);
 			}
 		});

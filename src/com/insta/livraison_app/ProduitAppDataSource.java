@@ -57,7 +57,7 @@ public class ProduitAppDataSource {
 			produit.setQuantite(cursor.getString(2));
 			produit.setStatut(Integer.parseInt(cursor.getString(3)));
 			produit.setCommentaire(cursor.getString(4));
-			produit.setLivraisonId(Integer.parseInt(cursor.getString(5)));
+			produit.setLivraisonId(id);
 			
 			produits.add(produit); 
 			cursor.moveToNext();
