@@ -61,6 +61,11 @@ public class LivraisonListFragment extends ListFragment {
 		detailView = (LivraisonDetailFragment) getFragmentManager().findFragmentById(R.id.detail_fragment);
 
 	}
+
+	public void onStop(){
+		super.onStop();
+		getActivity().unregisterReceiver(broadcastDbUpdate);
+	}
 	
 	public void onListItemClick(ListView l, View v, int position, long id) {
 		

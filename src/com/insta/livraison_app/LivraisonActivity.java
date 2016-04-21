@@ -1,22 +1,43 @@
 package com.insta.livraison_app;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.widget.CheckBox;
 import android.widget.Toast;
@@ -26,6 +47,7 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 	public static JSONObject livraisonDatas;	
 	private connexionOpen connexionNotif;
 	private boolean flagConnectivity;
+	public static boolean isConnectionEnabled;
 	public static Location location;
 	
 	@Override
@@ -41,17 +63,22 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		IntentFilter filter = new IntentFilter();
 		filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         this.registerReceiver(connexionNotif, filter);
+        this.updateConnectivity();
 		
-		JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
-		try {
-			getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        if (LivraisonActivity.isConnectionEnabled) {
+        	if (!isUpdatedToday()) {
+				JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
+				try {
+					getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				} catch (ExecutionException e) {
+					e.printStackTrace();
+				}
+        	}
+        } else {
+        	this.buildAlertMessageNoConnection();
+        }
 	}
 	
 	public void onBackPressed() {
@@ -68,19 +95,18 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 	}
 	
 	public static void updateLivraisonDb(JSONObject datas, Context context) throws JSONException {
-		Toast.makeText(context.getApplicationContext(), "inserting in db", Toast.LENGTH_SHORT).show();
 		
 		JSONObject livraisons = datas.getJSONObject("livraisons");
 		JSONArray lastDaysLivraisons = livraisons.getJSONArray("priority");
 		JSONArray dailyLivraisons = livraisons.getJSONArray("day");
-
+		JSONArray updateLivraisons = livraisons.getJSONArray("update");
 		
 		LivraisonAppDataSource LivraisonDataSource = new LivraisonAppDataSource(context.getApplicationContext());		
 		ClientAppDataSource ClientDataSource = new ClientAppDataSource(context.getApplicationContext());
+		ProduitAppDataSource produitDataSource = new ProduitAppDataSource(context.getApplicationContext());
 		ClientDataSource.open();
 		LivraisonDataSource.open();
-		
-//		LivraisonDataSource.deleteAll();
+		produitDataSource.open();
 		
 		for (int i = 0; i < lastDaysLivraisons.length(); i++) {
 
@@ -120,8 +146,23 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				}
 				
 				
+				JSONArray produits = detail.getJSONArray("produit");
+				
+				for(int j =0; j < produits.length(); j++){
+					JSONObject produit = produits.getJSONObject(j);
+					
+					int idWebService = Integer.parseInt(produit.getString("id"));
+					String reference = produit.getString("reference");
+					String quantite = produit.getString("quantite");
+					String commentaire = produit.getString("commentaire");
+					int statutProduit = Integer.parseInt(produit.getString("statut"));
+					int livraisonId = Integer.parseInt(produit.getString("livraison_id"));
+					
+					produitDataSource.insertProduit(idWebService, reference, quantite, statutProduit, commentaire, livraisonId);
+				}
 				LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
 						longitude, date, duration, distance, statut, client_id, livreur_id);
+				
 				
 			}			
 		}
@@ -155,15 +196,50 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				
 				ClientDataSource.insertClient(client_id, client_nom, client_prenom, client_email, client_telephone);
 				
+				JSONArray produits = detail.getJSONArray("produit");
+				
+				for(int j =0; j < produits.length(); j++){
+					JSONObject produit = produits.getJSONObject(j);
+					
+					int idWebService = Integer.parseInt(produit.getString("id"));
+					String reference = produit.getString("reference");
+					String quantite = produit.getString("quantite");
+					String commentaire = produit.getString("commentaire");
+					int statutProduit = Integer.parseInt(produit.getString("statut"));
+					int livraisonId = Integer.parseInt(produit.getString("livraison_id"));
+					
+					produitDataSource.insertProduit(idWebService, reference, quantite, statutProduit, commentaire, livraisonId);
+				}
+				
 				LivraisonDataSource.insertLivraison(id, adresse, numero, postal, ville, latitude, 
 						longitude, date, duration, distance, statut, client_id, livreur_id);
 				
 			}
-		}		
+		}	
+		
+		for(int i = 0 ; i < updateLivraisons.length(); i++){
+			JSONObject update = updateLivraisons.getJSONObject(i);
+			
+			int id = Integer.parseInt(update.getString("id"));
+			int statut = Integer.parseInt(update.getString("statut"));
+			
+			LivraisonDataSource.update(id, statut);
+			
+		}
+		
 		ClientDataSource.close();
 		LivraisonDataSource.close();
+		produitDataSource.close();
+		
 
-		Toast.makeText(context.getApplicationContext(), "inserting in db", Toast.LENGTH_SHORT).show();
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+	    Editor ed = prefs.edit();
+	    
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		Date today = (Date) Calendar.getInstance().getTime();
+		String compareDate = df.format(today);
+		ed.putString("date_update", compareDate);
+		ed.commit();
 		
 	}
 
@@ -172,23 +248,26 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			
-			Toast.makeText(context.getApplicationContext(), "broadcast receiver" + intent.getAction(), Toast.LENGTH_LONG).show();
-			
 			if (intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE")) {
 				ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 				NetworkInfo wifiNetInfo =   connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 				NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 				
-				if(flagConnectivity && (wifiNetInfo.isConnected() || mobNetInfo.isConnected()))
+				if(wifiNetInfo.isConnected() || mobNetInfo.isConnected())
 				{
-					JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
-			    	try {
-						getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					} catch (ExecutionException e) {
-						e.printStackTrace();
+					LivraisonActivity.isConnectionEnabled = true;
+					if (flagConnectivity && !isUpdatedToday()) {
+						JsonLoader getJsonConnection = new JsonLoader("livraison", findViewById(android.R.id.content), (CheckBox)findViewById(R.id.SaveData));
+				    	try {
+							getJsonConnection.execute("http://livraison-app.esy.es/?json=livraison").get();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						} catch (ExecutionException e) {
+							e.printStackTrace();
+						}
 					}
+				} else {
+					LivraisonActivity.isConnectionEnabled = false;
 				}
 			}
 			
@@ -199,6 +278,18 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 					
 		}		
 	}
+	
+	public void updateConnectivity() {
+		ConnectivityManager connectivityManager = (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wifiNetInfo =   connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		
+		if(wifiNetInfo.isConnected() || mobNetInfo.isConnected()) {
+			LivraisonActivity.isConnectionEnabled = true;
+		} else {
+			LivraisonActivity.isConnectionEnabled = false;
+		}
+	}
 
 	@Override
 	public void onLocationChanged(Location location) {
@@ -208,21 +299,105 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
-		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
 	public void onProviderDisabled(String provider) {
-		// TODO Auto-generated method stub
 		
 	}
 	
+	private void buildAlertMessageNoConnection() {
+	    final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	    builder.setMessage("Votre connexion semble être désactivée, nous ne pouvons actualiser les données")
+	           .setPositiveButton("D'accord", new DialogInterface.OnClickListener() {
+	               public void onClick(final DialogInterface dialog, final int id) {
+	                    dialog.dismiss();
+	               }
+	           });
+	    final AlertDialog alert = builder.create();
+	    alert.show();
+	}
+	
+	public boolean isUpdatedToday() {
+		Boolean result = false;
+		
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+		  Date today = (Date) Calendar.getInstance().getTime();
+		  String compareDate = df.format(today);
+		  try {
+			Date comp1 = df.parse(compareDate);
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+			String dateUpdate = prefs.getString("date_update", "");
+			Date comp2 = df.parse(dateUpdate);
+			
+			if (comp1.compareTo(comp2) == 0) {
+		    	 result = true;
+		     }
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} 
+		return result;
+	}
+	
+	public static void postData(Context context, ArrayList<Produit> produit)
+	{
+		HttpClient httpclient = new DefaultHttpClient();
+		String token = generateToken(context);
+	    HttpPost httppost = new HttpPost("http://livraison-app.esy.es/?json=livraison&token="+ token);
+	    
+	    ArrayList<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+	    
+	    for(int i = 0; i < produit.size(); i++){
+	    	
+	    	Produit value = produit.get(0);
+	    	
+	    	nameValuePairs.add(new BasicNameValuePair("id"+i, Integer.toString(value.getIdWebService())));
+		    nameValuePairs.add(new BasicNameValuePair("statut"+i, Integer.toString(value.getStatut())));
+		    nameValuePairs.add(new BasicNameValuePair("commentaire"+i, value.getCommentaire()));
+	    }
+	    try {
+			httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+			
+			// Execute HTTP Post Request
+	        HttpResponse response = httpclient.execute(httppost);
+	        
+	        JSONObject jsonObject = new JSONObject(response.toString());
+	        JSONObject datas = jsonObject.getJSONObject("data");
+	        
+	        LivraisonActivity.livraisonDatas = datas;
+	        Intent intentMessage = new Intent(LivraisonListFragment.dbUpdated);
+			context.sendBroadcast(intentMessage);
+	        
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (ClientProtocolException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static String generateToken(Context context)
+	{
+		Calendar c = Calendar.getInstance();
+		SimpleDateFormat df = new SimpleDateFormat("dd-MM-yy");
+		String date = df.format(c.getTime());
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+		String login = prefs.getString("username", "");
+		String password = prefs.getString("password", "");
+		
+		
+		
+		return login+"|"+password+"|"+date;
+	}
 	
 }

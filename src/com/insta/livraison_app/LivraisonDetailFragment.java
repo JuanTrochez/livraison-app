@@ -116,9 +116,9 @@ public class LivraisonDetailFragment extends Fragment {
 		AlertDialog.Builder builderSingle = new AlertDialog.Builder(this.getContext());
 		
 		final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this.getContext(),android.R.layout.select_dialog_singlechoice);
-		arrayAdapter.add("Bonjour Monsieur : " + client.getNom() + " je vous informe que votre colis est en cours de livraison");
-		arrayAdapter.add("Bonjour Monsieur : " + client.getNom() + " je vous informe que votre colis ne pourra malheuresement pas être livré aujourd'hui");
-		arrayAdapter.add("Bonjour Monsieur : " + client.getNom() + " je vous informe que votre colis arrivera avec ... de retard");
+		arrayAdapter.add("Bonjour Madame,Monsieur : " + client.getNom() + " je vous informe que votre colis est en cours de livraison");
+		arrayAdapter.add("Bonjour Madame,Monsieur : " + client.getNom() + " je vous informe que votre colis ne pourra malheureusement pas être livré aujourd'hui");
+		arrayAdapter.add("Bonjour Madame,Monsieur : " + client.getNom() + " je vous informe que votre colis arrivera avec du retard");
 
 		builderSingle.setNegativeButton(
 		        "cancel",

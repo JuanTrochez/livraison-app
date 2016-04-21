@@ -35,7 +35,7 @@ public class ProduitsAppDataSource {
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
 			Produit produit = new Produit();
-			produit.setId_webService(Integer.parseInt(cursor.getString(1)));
+			produit.setIdWebService(Integer.parseInt(cursor.getString(1)));
 			produit.setReference(cursor.getString(2));
 			produit.setQuantite(cursor.getString(3));
 			produit.setStatut(Integer.parseInt(cursor.getString(4)));

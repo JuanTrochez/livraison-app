@@ -109,6 +109,13 @@ public class LivraisonAppDataSource {
 		return bdd.insert(LivraisonAppDataSource.LIVRAISON_TABLE_NAME, null, values);
 	}
 	
+	public long update(int id, int statut){
+		ContentValues values = new ContentValues(); 
+		values.put(LivraisonAppDataSource.LIVRAISON_COLUMN_STATUT, statut);		
+		return bdd.update(LivraisonAppDataSource.LIVRAISON_TABLE_NAME, values, 
+				LivraisonAppDataSource.LIVRAISON_COLUMN_ID + " = " + id, null);
+	}
+	
 //	public void deleteAll() {
 //		bdd.delete(LivraisonAppDataSource.LIVRAISON_TABLE_NAME, "1=1", null);
 //	}

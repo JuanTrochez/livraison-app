@@ -3,21 +3,21 @@ package com.insta.livraison_app;
 import java.util.ArrayList;
 
 public class Produit {
-
-	private int id_webService;
+	
+	private int idWebService;
 	private String reference;
 	private String quantite;
 	private int statut;
 	private String commentaire;
-	private int livraison_id;	
+	private int livraisonId;
 	public static ArrayList<Produit> getProduitByLivraisonID;
 	
 	
-	public int getId_webService() {
-		return id_webService;
+	public int getIdWebService() {
+		return idWebService;
 	}
-	public void setId_webService(int id_webService) {
-		this.id_webService = id_webService;
+	public void setIdWebService(int idWebService) {
+		this.idWebService = idWebService;
 	}
 	public String getReference() {
 		return reference;
@@ -43,12 +43,13 @@ public class Produit {
 	public void setCommentaire(String commentaire) {
 		this.commentaire = commentaire;
 	}
-	public int getLivraison_id() {
-		return livraison_id;
+	public int getLivraisonId() {
+		return livraisonId;
 	}
-	public void setLivraison_id(int livraison_id) {
-		this.livraison_id = livraison_id;
+	public void setLivraisonId(int livraisonId) {
+		this.livraisonId = livraisonId;
 	}
-		
 	
+	
+
 }
