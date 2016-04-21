@@ -151,7 +151,15 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 				String client_telephone= client.getString("telephone");
 				String client_email= client.getString("email");
 				
-				ClientDataSource.insertClient(client_id, client_nom, client_prenom, client_email, client_telephone);		
+				ClientDataSource.insertClient(client_id, client_nom, client_prenom, client_email, client_telephone);
+				
+				
+				//insertion produit
+				JSONObject prod = detail.getJSONObject("produit"); // getJSONArray
+				for (int j = 0; j< prod.length(); j++) {
+					//insertion de chaque produit
+				}
+				
 				
 				JSONArray produits = detail.getJSONArray("produits");
 				

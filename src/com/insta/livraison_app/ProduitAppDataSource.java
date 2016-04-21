@@ -42,6 +42,30 @@ public class ProduitAppDataSource {
 		return cursor.getCount();
 	}
 	
+	public List<Produit> getAllProduitByLivraison(int id) {
+		List<Produit> produits = new ArrayList<Produit>(); 
+		String selectQuery = "SELECT *"
+							+ " FROM " + ProduitAppDataSource.PRODUIT_TABLE_NAME
+							+ " WHERE livraison_id = " + id;
+		Cursor cursor = bdd.rawQuery(selectQuery, null);
+
+		cursor.moveToFirst();
+		while (!cursor.isAfterLast()) { 
+			Produit produit = new Produit();
+			produit.setIdWebService(Integer.parseInt(cursor.getString(0)));
+			produit.setReference(cursor.getString(1));
+			produit.setQuantite(cursor.getString(2));
+			produit.setStatut(Integer.parseInt(cursor.getString(3)));
+			produit.setCommentaire(cursor.getString(4));
+			produit.setLivraisonId(Integer.parseInt(cursor.getString(5)));
+			
+			produits.add(produit); 
+			cursor.moveToNext();
+		}
+		cursor.close();
+		return produits;
+	}
+	
 	public ArrayList<Produit> getAllProduitToUpdateWebservice() {
 		ArrayList<Produit> produits = new ArrayList<Produit>(); 
 		String selectQuery = "SELECT p.id_webservice, p.reference, p.quantite, p.statut, p.commentaire, p.livraison_id"
