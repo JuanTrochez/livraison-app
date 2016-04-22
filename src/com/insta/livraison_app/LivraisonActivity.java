@@ -62,6 +62,11 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 		produitDataSource.open();
 		Produit.produit = produitDataSource.getAllProduitToUpdateWebservice();
 		produitDataSource.close();
+	
+		LivraisonAppDataSource LivraisonDataSource = new LivraisonAppDataSource(this);
+		LivraisonDataSource.open();		
+		Livraison.dailyLivraisons = LivraisonDataSource.getDailyLivraisons();
+		
 		
 		LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 		locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);

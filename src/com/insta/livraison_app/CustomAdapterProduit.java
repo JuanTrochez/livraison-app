@@ -1,5 +1,6 @@
 package com.insta.livraison_app;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -21,7 +22,6 @@ public class CustomAdapterProduit extends BaseAdapter{
 	
 	private LayoutInflater mInflater;
 	private List<Produit> values;
-	private HashMap<Integer,Integer> hmCheckBox = new HashMap<Integer,Integer>();
 	
 	public CustomAdapterProduit(Context context, List<Produit> data) {
 		this.mInflater = LayoutInflater.from(context);
@@ -53,6 +53,7 @@ public class CustomAdapterProduit extends BaseAdapter{
 	     if (view == null) {
 	          view = (LinearLayout) mInflater.inflate(R.layout.produitlistdetail, parent, false);
 	     }
+
 	     
 	     TextView tvproduitdetailRef = (TextView) view.findViewById(R.id.produitdetailRef);
 	     tvproduitdetailRef.setText(values.get(position).getQuantite());
@@ -64,7 +65,7 @@ public class CustomAdapterProduit extends BaseAdapter{
 	     EditText et = (EditText) view.findViewById(R.id.produitdetailCommentaire);
 	     
 	     et.addTextChangedListener(new TextWatcher() {
-
+	    	 String nText = "";
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 				// TODO Auto-generated method stub
@@ -74,13 +75,12 @@ public class CustomAdapterProduit extends BaseAdapter{
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
 				// TODO Auto-generated method stub
-				
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				
+				nText = s.toString();
 			}
 	    	 
 	     });
@@ -97,24 +97,12 @@ public class CustomAdapterProduit extends BaseAdapter{
 	 	       int position = (Integer) buttonView.getTag();
 	 	       if (buttonView.isChecked()) {
 					//do Something
-					hmCheckBox.put(position,position);
 				} else {
 					//do something else
-					if(!hmCheckBox.isEmpty())
-					{
-						hmCheckBox.remove(position);
-					}
 				}	
 	 	    }
 	 	});
 	     return view;
-	}
-	public HashMap<Integer,Integer> getHmCheckBox() {
-		return hmCheckBox;
-	}
-
-	public void setHmCheckBox(HashMap<Integer,Integer> hmCheckBox) {
-		this.hmCheckBox = hmCheckBox;
 	}
 
 	public void swapItems(List<Produit> items) {
