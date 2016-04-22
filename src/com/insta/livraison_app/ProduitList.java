@@ -31,7 +31,7 @@ public class ProduitList extends Activity{
        setContentView(R.layout.produitlist);
        produitDataSource = new ProduitAppDataSource(this);
        livraison = new LivraisonAppDataSource(this);
-       Toast.makeText(this, "valeur int : " + Produit.id_livraisonList, Toast.LENGTH_LONG).show();
+//       Toast.makeText(this, "valeur int : " + Produit.id_livraisonList, Toast.LENGTH_LONG).show();
        produitDataSource.open();     
        produits = produitDataSource.getAllProduitByLivraison(Produit.id_livraisonList);
        produitDataSource.close();
@@ -52,10 +52,10 @@ public class ProduitList extends Activity{
 			
 			for(int i=0; i <myCustomAdapter.getCount(); i++)
 			{
-				View vV = lv.getAdapter().getView(i, null, lv);
-				String comment = ((EditText) vV.findViewById(R.id.produitdetailCommentaire)).getText().toString();
-			    boolean checked = ((CheckBox)vV.findViewById(R.id.check)).isChecked();
-			    int statut = 0;		    
+				String comment = ((EditText) lv.getChildAt(i).findViewById(R.id.produitdetailCommentaire)).getText().toString();
+			    boolean checked = ((CheckBox)lv.getChildAt(i).findViewById(R.id.check)).isChecked();
+			    int statut = 0;	
+//			    Toast.makeText(context, "comment = " + checked, Toast.LENGTH_LONG).show();
 			    if(checked){
 			    	statut = 1;
 			    }
@@ -65,9 +65,9 @@ public class ProduitList extends Activity{
 			    livraison.update(idLivraison, 2);		    
 			}
 			
-			Produit.produit = produitDataSource.getAllProduitToUpdateWebservice();
 			
 			if(LivraisonActivity.isConnectionEnabled){
+				Produit.produit = produitDataSource.getAllProduitToUpdateWebservice();
 				PostRequestAsync request = new PostRequestAsync(context, Produit.produit);
         		String token = LivraisonActivity.generateToken(context);
         		try {

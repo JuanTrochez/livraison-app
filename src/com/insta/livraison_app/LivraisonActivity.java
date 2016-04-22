@@ -231,6 +231,8 @@ public class LivraisonActivity extends FragmentActivity implements LocationListe
 			
 		}
 		
+		Livraison.dailyLivraisons = LivraisonDataSource.getDailyLivraisons();
+		
 		ClientDataSource.close();
 		LivraisonDataSource.close();
 		produitDataSource.close();

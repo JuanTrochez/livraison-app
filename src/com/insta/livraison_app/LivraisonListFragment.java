@@ -86,6 +86,7 @@ public class LivraisonListFragment extends ListFragment {
 		public void onReceive(Context context, Intent intent) {
 						
 				try {
+					Toast.makeText(context, "broadcastUpdate", Toast.LENGTH_LONG).show();
 					LivraisonActivity.updateLivraisonDb(LivraisonActivity.livraisonDatas, context);
 					
 					ClientAppDataSource clientDataSource = new ClientAppDataSource(getActivity().getApplicationContext());

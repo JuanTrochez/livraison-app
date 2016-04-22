@@ -46,7 +46,8 @@ public class ProduitAppDataSource {
 		List<Produit> produits = new ArrayList<Produit>(); 
 		String selectQuery = "SELECT *"
 							+ " FROM " + ProduitAppDataSource.PRODUIT_TABLE_NAME
-							+ " WHERE livraison_id = " + id;
+							+ " WHERE livraison_id = " + id
+							+ " AND statut = 0";
 		Cursor cursor = bdd.rawQuery(selectQuery, null);
 
 		cursor.moveToFirst();
@@ -108,8 +109,8 @@ public class ProduitAppDataSource {
 	
 	public long update(int id, String commentaire, int statut){
 		ContentValues values = new ContentValues(); 
-		values.put(ProduitAppDataSource.PRODUIT_COLUMN_STATUT, commentaire);
-		values.put(ProduitAppDataSource.PRODUIT_COLUMN_COMMENTAIRE, statut);		
+		values.put(ProduitAppDataSource.PRODUIT_COLUMN_STATUT, statut);
+		values.put(ProduitAppDataSource.PRODUIT_COLUMN_COMMENTAIRE, commentaire);		
 		return bdd.update(ProduitAppDataSource.PRODUIT_TABLE_NAME, values, 
 				ProduitAppDataSource.PRODUIT_COLUMN_ID + " = " + id, null);
 	}

@@ -19,6 +19,8 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
 public class PostRequestAsync extends AsyncTask<String, Integer, Double> {
 
@@ -56,6 +58,7 @@ public class PostRequestAsync extends AsyncTask<String, Integer, Double> {
 		    HttpResponse response = httpclient.execute(httppost);
 		    
 		    String json_string = EntityUtils.toString(response.getEntity());
+		    Log.w("stringJson", json_string);
 //		    JSONObject temp1 = new JSONObject(json_string);
 		    
 		    JSONObject jsonObject = new JSONObject(json_string);
